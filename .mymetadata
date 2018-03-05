@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="sch"
+  id="myeclipse.1425435926733"
+  context-root="/sch"
+  j2ee-spec="5.0"
+  archive="sch.war">
+  <attributes>
+    <attribute name="webrootdir" value="webapp" />
+  </attributes>
+</project-module>
+

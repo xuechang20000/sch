@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<beans xmlns="http://www.springframework.org/schema/beans"        
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"               
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">       
+	
+	<bean id="containService" class="com.wb.contain.service.ContainServiceImpl"></bean>
+	<!-- <bean id="containService" parent="txProxy">
+		<property name="target" ref="containServiceImpl"></property>
+	</bean>-->
+	<bean id="commonAction" class="com.wb.contain.action.ContainAction">
+		<property name="handlerMapping" ref="handlerMapping"></property>
+		<property name="containService" ref="containService"></property>
+	</bean>
+</beans>

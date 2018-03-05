@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<beans xmlns="http://www.springframework.org/schema/beans"        
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"               
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">       
+	
+	<bean id="loginServiceImpl" class="com.wb.login.service.LoginServiceImpl"></bean>
+	<bean id="loginService" parent="txProxy">
+		<property name="target" ref="loginServiceImpl"></property>
+	</bean>
+	
+	<bean id="loginAction" class="com.wb.login.action.LoginAction">
+		<property name="loginService" ref="loginService"></property>
+		<property name="domain" value="${application.domain}"></property>
+	</bean>
+	<bean id="logoutAction" class="com.wb.login.action.LogoutAction">
+	</bean>
+	<bean id="validationCodeAction" class="com.wb.login.action.ValidateCodeAction">
+	</bean>
+	<bean id="workspaceAction" class="com.wb.login.action.WorkspaceAction">
+		<property name="loginService" ref="loginService"></property>
+	</bean>
+</beans>

@@ -1,0 +1,117 @@
+<beans xmlns="http://www.springframework.org/schema/beans"       
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"       
+	xmlns:mvc="http://www.springframework.org/schema/mvc"       
+	xmlns:p="http://www.springframework.org/schema/p"       
+	xmlns:context="http://www.springframework.org/schema/context"       
+	xmlns:aop="http://www.springframework.org/schema/aop"       
+	xmlns:tx="http://www.springframework.org/schema/tx"       
+	xsi:schemaLocation="http://www.springframework.org/schema/beans             
+	classpath:/org/springframework/beans/factory/xml/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/aop
+	classpath:/org/springframework/aop/config/spring-aop-3.2.xsd
+	http://www.springframework.org/schema/tx
+	classpath:/org/springframework/transaction/config/spring-tx-3.2.xsd
+	http://www.springframework.org/schema/mvc
+	classpath:/org/springframework/web/servlet/config/spring-mvc-3.2.xsd
+	http://www.springframework.org/schema/context
+	classpath:/org/springframework/context/config/spring-context-3.2.xsd">
+	
+	<!-- 启用Spring注释 -->
+	<context:annotation-config />
+	
+	<!-- 使Spring支持自动检测组件，如注解的Controller -->
+	<context:component-scan base-package="com.wb.school" />
+	<context:component-scan base-package="com.wb.admin" />
+    
+    
+	<!--启动spring mvc的注解功能,设置编码方式，防止乱码 -->
+	<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+	</bean>
+	<bean id="handlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">   
+	         <list>   
+	             <bean class="org.springframework.http.converter.StringHttpMessageConverter">   
+	                <property name="supportedMediaTypes">
+	                      <list>
+	                          <value>text/html;charset=UTF-8</value>   
+	                     </list>   
+	                </property>   
+	             </bean>   
+	         </list>
+	   </property>
+	</bean>
+	<!--<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+			     <property name="supportedMediaTypes">  
+	                <list>  
+	                    <value>text/plain;charset=UTF-8</value>  
+	                    <value>text/html;charset=UTF-8</value>  
+	                </list>  
+	            </property>  
+			</bean>
+		</mvc:message-converters>
+    </mvc:annotation-driven>-->
+    
+    <!--srping mvc 拦截器 -->
+	<mvc:interceptors>
+		 <mvc:interceptor>
+			<!--  如果不配置或/**,将拦截所有的Controller,/*表示拦截第一层 -->
+			<mvc:mapping path="/**"/>
+			<!--不需要拦截的路径 -->
+			<mvc:exclude-mapping path="/login.action" />
+			<mvc:exclude-mapping path="/validationCode/**" />
+			<bean class="com.wb.login.interceptor.LoginInterceptor"></bean> 
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean class="com.wb.contain.interceptor.ObjectInterceptor"></bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean class="com.wb.login.interceptor.BusinessContextInterceptor"></bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/validationCode/**" />
+			<mvc:exclude-mapping path="/workspace/**" />
+			<mvc:exclude-mapping path="/common/**" />
+			<bean class="com.wb.login.interceptor.UrlLogInterceptor"></bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/validationCode/**" />
+			<mvc:exclude-mapping path="/login.action" />
+			<bean class="com.wb.login.interceptor.LoginValidateInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	
+	
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<description>属性配置接入</description>
+		<property name="locations">
+			<list>
+				<value>classpath:application.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"  
+		p:prefix="/pages/" p:suffix=".jsp" />
+	
+	<!--登录组件-->
+	<import resource="classpath:/com/wb/login/loginContext.xml"/>
+	<!--admin组件-->
+	<import resource="classpath:/com/wb/admin/adminContext.xml"/>
+	<!--公共Excel导出组件-->
+	<import resource="classpath:/com/wb/contain/containContext.xml"/>
+	<!--公共异常处理组件-->
+	<import resource="classpath:/com/wb/exceptions/exceptionContext.xml"/>
+	<!--公共业务组件-->
+	<import resource="classpath:/com/wb/school/common/commonContext.xml"/>
+	<!--权限管理-->
+	<import resource="classpath:/com/wb/school/f1001/common/f1001Context.xml"/>
+	<import resource="classpath:/com/wb/school/f1002/f1002Context.xml"/>
+</beans> 

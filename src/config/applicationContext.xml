@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>     
+		
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<description>属性配置接入</description>
+		<property name="locations">
+			<list>
+				<value>classpath:database.properties</value>
+				<value>classpath:application.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!--<bean id="dataSource"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
+        <property name="url" value="jdbc:oracle:thin:@//15.72.12.25:1521/qdhis"></property>
+        <property name="username" value="testab"></property>
+        <property name="password" value="WDWD"></property>
+    </bean>-->
+	
+	<!-- dbcp连接池配置 -->
+	
+	  <!-- 阿里 druid 数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">         
+		<!-- 数据库基本信息配置 -->
+         <property name = "url" value = "${url}" />  
+         <property name = "username" value = "${username}" />  
+         <property name = "password" value = "${password}" />  
+         <property name = "driverClassName" value = "${driverClassName}" />  
+         <property name = "filters" value = "${filters}" />  
+          <!-- 最大并发连接数 -->
+         <property name = "maxActive" value = "${maxActive}" />
+         <!-- 初始化连接数量 -->
+         <property name = "initialSize" value = "${initialSize}" />
+         <!-- 配置获取连接等待超时的时间 -->
+         <property name = "maxWait" value = "${maxWait}" />
+         <!-- 最小空闲连接数 -->
+         <property name = "minIdle" value = "${minIdle}" /> 
+          <!-- 是否缓存preparedStatement -->
+         <property name = "poolPreparedStatements" value = "${poolPreparedStatements}" />   
+         <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+         <property name = "timeBetweenEvictionRunsMillis" value ="${timeBetweenEvictionRunsMillis}" />
+         <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+         <property name = "minEvictableIdleTimeMillis" value ="${minEvictableIdleTimeMillis}" />  
+          <!--<property name = "validationQuery" value = "${validationQuery}" /> --> 
+         <property name = "testWhileIdle" value = "${testWhileIdle}" />  
+         <property name = "testOnBorrow" value = "${testOnBorrow}" />  
+         <property name = "testOnReturn" value = "${testOnReturn}" />  
+         <property name = "maxOpenPreparedStatements" value ="${maxOpenPreparedStatements}" />
+         <!-- 打开 removeAbandoned 功能 -->
+         <property name = "removeAbandoned" value = "${removeAbandoned}" />
+         <!-- 1800 秒，也就是 30 分钟 -->
+         <property name = "removeAbandonedTimeout" value ="${removeAbandonedTimeout}" />
+         <!-- 关闭 abanded 连接时输出错误日志 -->   
+         <property name = "logAbandoned" value = "${logAbandoned}" />
+    </bean >
+	
+	<!-- jndi连接池配置 -->
+	<!--
+	<bean id="dataSource"
+		class="org.springframework.jndi.JndiObjectFactoryBean">
+		<description>JNDI 数据源配置</description> <property name="jndiName"
+		value="QDYTH-WS"/> 
+	</bean>
+	-->
+	
+	<!-- jdbc事务配置 -->
+	<bean id="txProxy" abstract="true" lazy-init="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">     
+    	<property name="transactionManager" ref="transactionManager"/>
+	    <property name="transactionAttributes">
+	        <props>
+	          <prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="plus*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="del*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="upt*">PROPAGATION_REQUIRED</prop>
+				<prop key="proc*">PROPAGATION_REQUIRED</prop>
+				<prop key="exec*">PROPAGATION_REQUIRED</prop>
+				<prop key="find*">PROPAGATION_SUPPORTS,readOnly</prop>
+				<prop key="load*">PROPAGATION_SUPPORTS,readOnly</prop>
+				<prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED, readOnly,-Exception</prop>
+	        </props>     
+	    </property>
+	</bean>  
+	<!--公共jdbc处理组件-->
+	<import resource="classpath:/com/wb/jdbcutils/jdbcContext.xml"/>
+</beans> 
