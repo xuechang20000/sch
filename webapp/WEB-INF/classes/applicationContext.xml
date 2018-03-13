@@ -84,6 +84,7 @@
 				<prop key="upt*">PROPAGATION_REQUIRED</prop>
 				<prop key="proc*">PROPAGATION_REQUIRED</prop>
 				<prop key="exec*">PROPAGATION_REQUIRED</prop>
+				<prop key="init*">PROPAGATION_REQUIRED</prop>
 				<prop key="find*">PROPAGATION_SUPPORTS,readOnly</prop>
 				<prop key="load*">PROPAGATION_SUPPORTS,readOnly</prop>
 				<prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
