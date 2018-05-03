@@ -140,7 +140,7 @@
                 <tr>
                     <td >原学历层次：</td>
                     <td>
-                        <input id="oldeducationlevel" name="oldeducationlevel" class="mini-combobox" style="width:150px;" 
+                        <input id="oldeducationlevel" name="oldeducationlevel" class="mini-combobox" style="width:150px;" required="true"
                           textField="name" valueField="id"  onvaluechanged="onSelectchanged"  url="<%=request.getContextPath()%>/admin/querySubSchoolsById.action" showNullItem="true" allowInput="true"/> <font color="red">*</font>
                             
                     </td>
@@ -148,36 +148,36 @@
                  <tr>
                     <td >报考层次:</td>
                     <td>
-                       <input id="examlevel" name="examlevel" class="mini-combobox" style="width:150px;" 
+                       <input id="examlevel" name="examlevel" class="mini-combobox" style="width:150px;" required="true"
                           textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/><font color="red">*</font> 
                     </td>
                     <td >考试科类：</td>
                     <td>
-                          <input id="examclass" name="examclass" class="mini-combobox" style="width:150px;" 
+                          <input id="examclass" name="examclass" class="mini-combobox" style="width:150px;" required="true"
                           textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/><font color="red">*</font> 
                     </td>
                 </tr>
                 <tr>
                     <td >第一志愿院校 ：<br/>选择后，手输院校将无法填写，请谨慎操作</td>
                     <td>
-                       <input id="firstwishschool" name="firstwishschool" class="mini-combobox" style="width:150px;" 
+                       <input id="firstwishschool" name="firstwishschool" class="mini-combobox" style="width:150px;" required="true"
                           textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/><font color="red">*</font> 
                     </td>
                     <td >第一志愿专业：</td>
                     <td>
-                          <input id="firstwishspecialty" name="firstwishspecialty" class="mini-combobox" style="width:150px;" 
+                          <input id="firstwishspecialty" name="firstwishspecialty" class="mini-combobox" style="width:150px;" required="true"
                           textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/><font color="red">*</font> 
                     </td>
                 </tr>
                  <tr>
                     <td >学习形式：</td>
                     <td>
-                       <input id="learningform" name="learningform" class="mini-combobox" style="width:150px;" 
+                       <input id="learningform" name="learningform" class="mini-combobox" style="width:150px;" required="true"
                           textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/><font color="red">*</font> 
                     </td>
                     <td >第一志愿学制 ：</td>
                     <td>
-                          <input id="firstwishlength" name="firstwishlength" class="mini-textbox"  enabled='false' /><font color="red">*</font> 
+                          <input id="firstwishlength" name="firstwishlength" class="mini-textbox" required="true"  enabled='false' /><font color="red">*</font> 
                     </td>
                 </tr>
                  <tr>

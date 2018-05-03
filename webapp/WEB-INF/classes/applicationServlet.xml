@@ -4,7 +4,8 @@
 	xmlns:p="http://www.springframework.org/schema/p"       
 	xmlns:context="http://www.springframework.org/schema/context"       
 	xmlns:aop="http://www.springframework.org/schema/aop"       
-	xmlns:tx="http://www.springframework.org/schema/tx"       
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"       
 	xsi:schemaLocation="http://www.springframework.org/schema/beans             
 	classpath:/org/springframework/beans/factory/xml/spring-beans-3.2.xsd
 	http://www.springframework.org/schema/aop
@@ -14,7 +15,10 @@
 	http://www.springframework.org/schema/mvc
 	classpath:/org/springframework/web/servlet/config/spring-mvc-3.2.xsd
 	http://www.springframework.org/schema/context
-	classpath:/org/springframework/context/config/spring-context-3.2.xsd">
+	classpath:/org/springframework/context/config/spring-context-3.2.xsd
+	http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task.xsd"
+	>
 	
 	<!-- 启用Spring注释 -->
 	<context:annotation-config />
@@ -23,6 +27,9 @@
 	<context:component-scan base-package="com.wb.school" />
 	<context:component-scan base-package="com.wb.admin" />
     
+       <!-- 定时器开关-->
+    <task:annotation-driven />
+    <task:scheduler id="myScheduler" pool-size="10"/>
     
 	<!--启动spring mvc的注解功能,设置编码方式，防止乱码 -->
 	<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">

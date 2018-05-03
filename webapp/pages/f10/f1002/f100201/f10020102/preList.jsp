@@ -40,7 +40,7 @@
                               
                     	<a class="mini-button" id="id_onSerach" iconCls="icon-edit" onclick="onSerach">查询</a>
     </fieldset>
-   <div id="datagrid1" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true"
+   <div id="datagrid1" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true" pagerButtons="#exportExcel"
         url="<%=request.getContextPath()%>/work/f10020102/queryStuRemoteListByCurentUserPub.action"  idField="stuid"  pageSize='100'
     >
         <div property="columns">
@@ -62,11 +62,12 @@
 			<div field="do" width="120" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO'>操作</div>        
         </div>
     </div>
+     <jsp:include page="/pages/common/exportExcel.jsp"></jsp:include>
 </body>
 <script type="text/javascript">
 mini.parse();
 var grid=mini.get("datagrid1");
-grid.load();
+Web.util.load("datagrid1",{});
 var usergrouptype='${user.grouptypeclass}';
 
 

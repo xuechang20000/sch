@@ -3,6 +3,7 @@ package com.wb.school.f1001.common.service;
 import java.util.List;
 
 import com.wb.admin.bo.User;
+import com.wb.jdbcutils.CommonJdbcUtils;
 import com.wb.jdbcutils.Page;
 import com.wb.school.common.bo.Student;
 import com.wb.school.common.bo.StudentExt;
@@ -48,4 +49,7 @@ public interface EmpService {
 	public Student execFall(Long stuid,String flag);
 	public void deleteStudent(String stuid);
 	public List<ProStepParmVO> queryProcessStepParams(String param);
+	public void saveBirthdayRemind();
+	void queryStuListByBirthdayRemind(Page page, StudentVO vo);
+	public void updateBirthdayRemind(Long stuid);
 }

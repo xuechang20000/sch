@@ -53,7 +53,7 @@ public class EmpServiceImpl implements EmpService {
 
 	@Override
 	public void addStudent(Student stu) {
-		String sql = "select * from t_student where cardid=? and (enabled is null or enabled='1') ";
+		String sql = "select * from t_student where cardid=? and (enabled is null or enabled='1') and CTIME > DATE_SUB(CURDATE(),INTERVAL dayofyear(now())-1 DAY) ";
 		Student student = CommonJdbcUtils.queryFirst(sql, Student.class, stu.getCardid());
 		if (student != null) {
 			throw new BusinessException("该身份证号人员已经存在！");
@@ -813,5 +813,89 @@ public class EmpServiceImpl implements EmpService {
 		if ("step".equals(param))
 			sql = "select stepcode id,stepname name from t_step where PROCESSCODE='C'";
 		return CommonJdbcUtils.query(sql, ProStepParmVO.class);
+	}
+	/**
+	 * 生成生日提醒记录
+	 */
+	public void saveBirthdayRemind(){
+		String sql="insert into t_birthday(stuid,year,birthday,remind) " +
+				" select stuid,year(CURDATE()),SUBSTR(cardid FROM 11 FOR 4),'0' from t_student where SUBSTR(cardid FROM 11 FOR 4) = SUBSTR(CURDATE()+0 FROM 5 FOR 4)";
+		CommonJdbcUtils.execute(sql);
+	}
+	
+	/**
+	 * 查询待操作列表
+	 */
+	@Override
+	public void queryStuListByBirthdayRemind(Page page, StudentVO vo) {
+		StringBuffer sb = new StringBuffer();
+		UserVO user = BusinessContextUtils.getUserContext();
+		OrganUser ou = CommonJdbcUtils.queryFirst("select * from app_organ_user where userid=?", OrganUser.class,
+				user.getUserid());
+		if (ou == null)
+			return;
+		// Long groupid=user.getGrouptypeid();
+		sb.append("SELECT d.groupname GROUPNAME,                                 ");
+		sb.append("       A.STUID,                                                                               ");
+		sb.append("       A.STU_NAME,                                                                            ");
+		if(!user.getGrouptypeclass().equals("04")&&!user.getGrouptypeclass().equals("06"))
+		sb.append("       A.CEllPHONE,                                                                               ");
+		sb.append("       A.STU_LEVEL,                                                                           ");
+		sb.append("       A.RECORDER,                                                                            ");
+		sb.append("       (SELECT NAME FROM app_user WHERE userid=a.recorder) RECORDEROR,                        ");
+		sb.append("       A.FOLLOW,                                                                              ");
+		sb.append("       (SELECT NAME FROM app_user WHERE userid=a.FOLLOW) FOLLOWOR,                            ");
+		sb.append("       A.EXAMLEVEL,                                                                           ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.examlevel) examlevelor,                          ");
+		sb.append("       A.EXAMCLASS,                                                                           ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.EXAMCLASS) EXAMCLASSor,                          ");
+		sb.append("       A.FIRSTWISHSCHOOL,                                                                     ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.FIRSTWISHSCHOOL) FIRSTWISHSCHOOLor,              ");
+		sb.append("       A.FIRSTWISHSPECIALTY,                                                                  ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.FIRSTWISHSPECIALTY) FIRSTWISHSPECIALTYor,        ");
+		sb.append("       A.LEARNINGFORM,                                                                        ");
+		sb.append("        (SELECT NAME FROM t_school WHERE ID=a.LEARNINGFORM) LEARNINGFORMor,                   ");
+		sb.append("       A.MANUALSCHOOL,                                                                        ");
+		sb.append("       A.MANUALSPECIALTY,                                                                     ");
+		sb.append("       A.BLONGRELATION,c.remind,c.birthday,                                                                      ");
+		sb.append(" 	CONCAT((select processname from t_process where PROCESSCODE=a.PROCESSCODE),"
+				+ "'》',(select stepname from t_step where STEPCODE=a.STEPCODE)) as proce_stepname ");
+		sb.append("  FROM T_STUDENT A,v_app_user d,t_birthday c ");
+		sb.append(
+				" WHERE a.stuid=c.stuid and a.RECORDER=d.userid	and (a.ENABLED<>2 or a.ENABLED is null)						 ");
+		sb.append("   AND d.NODEID IN                                                                          	 ");
+		sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan(?)))    ");
+		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
+			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
+		}
+		if (vo.getStu_level() != null && vo.getStu_level().length() > 0 && vo.getStu_level().length() < 10) {
+			sb.append(" and a.stu_level=" + vo.getStu_level() + "  ");
+		}
+		if (vo.getS_date() != null && vo.getS_date().length() > 0) {
+			sb.append(" AND a.ctime>=to_date('" + vo.getS_date() + "','yyyymmdd')  ");
+		}
+		if (vo.getE_date() != null && vo.getE_date().length() > 0) {
+			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
+		}
+		if (vo.getGroupname() != null && vo.getGroupname().length() > 0) {
+			sb.append(" AND d.groupname like '%" + vo.getGroupname() + "%'  ");
+		}
+		if (vo.getFollowor() != null && vo.getFollowor().length() > 0) {
+			sb.append(" AND a.follow =" + vo.getFollowor() + " ");
+		}
+		if (vo.getIscreatenormal() != null && "3".equals(vo.getIscreatenormal())) {
+			sb.append(" AND a.iscreatenormal='3'  ");
+		} else {
+			sb.append(" AND a.iscreatenormal='1'  ");
+		}
+		if (vo.getRemind() != null && vo.getRemind().length() > 0) {
+			sb.append(" AND c.remind =" + vo.getRemind() + " ");
+		}
+		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, ou.getNodeid());
+	}
+	
+	public void updateBirthdayRemind(Long stuid){
+		String sql="update t_birthday set remind='1' where stuid=? ";
+		CommonJdbcUtils.execute(sql,stuid);
 	}
 }

@@ -21,7 +21,8 @@ public class StudentVO extends Student {
 	private String proce_stepname;
 	private Long vcount;
 	private String notNext;//是否跳到下一步
-	
+	private String remind;//是否已经生日提醒
+	private String birthday;
 	public String getProcessname() {
 		return processname;
 	}
@@ -123,6 +124,18 @@ public class StudentVO extends Student {
 	}
 	public String getNotNext() {
 		return notNext;
+	}
+	public void setRemind(String remind) {
+		this.remind = remind;
+	}
+	public String getRemind() {
+		return remind;
+	}
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+	public String getBirthday() {
+		return birthday;
 	}
 	
 	
