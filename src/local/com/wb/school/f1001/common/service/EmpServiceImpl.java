@@ -20,6 +20,7 @@ import com.wb.school.common.bo.Step;
 import com.wb.school.common.bo.Student;
 import com.wb.school.common.bo.StudentExt;
 import com.wb.school.common.bo.StudentPay;
+import com.wb.school.common.bo.StudentPre;
 import com.wb.school.common.service.CommonService;
 import com.wb.school.f1001.common.vo.ExportSetVO;
 import com.wb.school.f1001.common.vo.ExportVO;
@@ -72,7 +73,34 @@ public class EmpServiceImpl implements EmpService {
 		pdto.setNext_stepcode("A1");
 		saveLog(pdto, stu.getStuid(), stu.getStu_name());
 	}
-
+	/**
+	 * 预报名登记
+	 */
+	@Override
+	public void addStudentPre(StudentPre stu) {
+		String sql = "select * from t_pre_student where cardid=? and (enabled is null or enabled='1') and CTIME > DATE_SUB(CURDATE(),INTERVAL dayofyear(now())-1 DAY) ";
+		Student student = CommonJdbcUtils.queryFirst(sql, Student.class, stu.getCardid());
+		if (student != null) {
+			throw new BusinessException("该身份证号人员已经存在！");
+		}
+		stu.setEnabled("1");
+		stu.setCtime(new Date());
+		stu.setProcesscode("z");
+		stu.setStepcode("z1");
+		stu.setIsfall("0");
+		CommonJdbcUtils.save(stu);
+		
+		// 写日志
+		ProcessDTO pdto = new ProcessDTO();
+		pdto.setNext_processcode("z");
+		pdto.setNext_stepcode("z1");
+		saveLog(pdto, stu.getStuid(), stu.getStu_name());
+	}
+	public void updateStudentPreToAlready(StudentPre stu) {
+		String sql = "update t_pre_student set enabled='0' where stuid=? ";
+		CommonJdbcUtils.execute(sql, stu.getStuid());
+		
+	}
 	@Override
 	public void addStudentExt(Student stu) {
 		StudentExt se = new StudentExt();
@@ -244,7 +272,64 @@ public class EmpServiceImpl implements EmpService {
 		}
 		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, vo.getProcesscode(), ou.getNodeid());
 	}
-
+	/**
+	 * 查询预报名待操作列表
+	 */
+	@Override
+	public void queryStuListByCurentUserPre(Page page, StudentVO vo) {
+		StringBuffer sb = new StringBuffer();
+		UserVO user = BusinessContextUtils.getUserContext();
+		OrganUser ou = CommonJdbcUtils.queryFirst("select * from app_organ_user where userid=?", OrganUser.class,
+				user.getUserid());
+		if (ou == null)
+			return;
+		Long groupid = user.getGrouptypeid();
+		sb.append("SELECT (SELECT GROUPNAME                                                                      ");
+		sb.append("          FROM APP_GROUP, APP_GROUP_USER                                                      ");
+		sb.append("         WHERE APP_GROUP_USER.GROUPID = APP_GROUP.GROUPID                                     ");
+		sb.append("           AND APP_GROUP_USER.USERID = A.RECORDER) GROUPNAME,                                 ");
+		sb.append("       A.STUID,                                                                               ");
+		sb.append("       A.STU_NAME,                                                                            ");
+		sb.append("       A.CEllPHONE,                                                                               ");
+		sb.append("       A.STU_LEVEL,                                                                           ");
+		sb.append("       A.RECORDER,                                                                            ");
+		sb.append("       (SELECT NAME FROM app_user WHERE userid=a.recorder) RECORDEROR,                        ");
+		sb.append("       A.FOLLOW,                                                                              ");
+		sb.append("       (SELECT NAME FROM app_user WHERE userid=a.FOLLOW) FOLLOWOR,                            ");
+		sb.append("       A.EXAMLEVEL,                                                                           ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.examlevel) examlevelor,                          ");
+		sb.append("       A.EXAMCLASS,                                                                           ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.EXAMCLASS) EXAMCLASSor,                          ");
+		sb.append("       A.FIRSTWISHSCHOOL,                                                                     ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.FIRSTWISHSCHOOL) FIRSTWISHSCHOOLor,              ");
+		sb.append("       A.FIRSTWISHSPECIALTY,                                                                  ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.FIRSTWISHSPECIALTY) FIRSTWISHSPECIALTYor,        ");
+		sb.append("       A.LEARNINGFORM,                                                                        ");
+		sb.append("        (SELECT NAME FROM t_school WHERE ID=a.LEARNINGFORM) LEARNINGFORMor,                   ");
+		sb.append("       A.MANUALSCHOOL,                                                                        ");
+		sb.append("       A.MANUALSPECIALTY,                                                                     ");
+		sb.append(
+				"       A.BLONGRELATION,a.ctime,a.stepcode,a.enabled                                                                     ");
+		sb.append("  FROM t_pre_student A, APP_ORGAN_USER B                                                        ");
+		sb.append(
+				" WHERE A.RECORDER = B.USERID   and a.processcode=?  "
+						+ "  ");
+		sb.append("   AND B.NODEID IN                                                                        ");
+		sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan(?)))    ");
+		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
+			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
+		}
+		if (vo.getStu_level() != null && vo.getStu_level().length() > 0 && vo.getStu_level().length() < 10) {
+			sb.append(" and a.stu_level=" + vo.getStu_level() + "  ");
+		}
+		if (vo.getS_date() != null && vo.getS_date().length() > 0) {
+			sb.append(" AND a.ctime>=to_date('" + vo.getS_date() + "','yyyymmdd')  ");
+		}
+		if (vo.getE_date() != null && vo.getE_date().length() > 0) {
+			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
+		}
+		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, "z", ou.getNodeid());
+	}
 	/**
 	 * 查询待操作列表
 	 */
@@ -672,6 +757,15 @@ public class EmpServiceImpl implements EmpService {
 				+ "(SELECT processname FROM t_process WHERE processcode=a.processcode) processname,"
 				+ "(SELECT stepname FROM t_step WHERE stepcode=a.stepcode) stepname,a.ctime s_date,a.* "
 				+ "FROM t_student a WHERE a.stuid=?";
+		return CommonJdbcUtils.queryFirst(sql, StudentVO.class, stuid);
+	}
+	@Override
+	public StudentVO queryStudnetByStuidPre(String stuid) {
+		String sql = "SELECT "
+				+ "(SELECT groupname FROM app_group,app_group_user WHERE app_group_user.groupid=app_group.groupid AND app_group_user.userid=a.recorder) groupname,"
+				+ "(SELECT processname FROM t_process WHERE processcode=a.processcode) processname,"
+				+ "(SELECT stepname FROM t_step WHERE stepcode=a.stepcode) stepname,a.ctime s_date,a.* "
+				+ "FROM t_pre_student a WHERE a.stuid=?";
 		return CommonJdbcUtils.queryFirst(sql, StudentVO.class, stuid);
 	}
 
