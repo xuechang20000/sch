@@ -24,7 +24,7 @@ public interface AdminVS {
 	public void deleteOrgan(Long nodeid);
 	public Organ queryOrganByNodeid(Long nodeid);
 	public void addUser(UserVO vo,List<Group> groups);
-	public void deleteUser(Long userid);
+	public void deleteUser(Long userid,String recorder);
 	public User updateUser(UserVO vo,List<Group> groups);
 	public void initUserPassword(Long userid);
 	public User queryUserById(Long userid);

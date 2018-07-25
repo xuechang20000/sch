@@ -170,9 +170,11 @@ public class AdminVSImpl implements AdminVS {
 	}
 
 	@Override
-	public void deleteUser(Long userid) {
+	public void deleteUser(Long userid,String recorder) {
 		String sql = "update app_user set removed='1' where userid=?";
 		CommonJdbcUtils.execute(sql, userid);
+		sql="update t_student set RECORDER=?,FOLLOW=? where RECORDER=?";
+		CommonJdbcUtils.execute(sql,recorder,recorder,userid);
 	}
 
 	@Override

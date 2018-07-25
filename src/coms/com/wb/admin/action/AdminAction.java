@@ -194,8 +194,8 @@ public class AdminAction {
 
 	@RequestMapping(value = "deleteUser.action")
 	@ResponseBody
-	public String deleteUser(String userid, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		this.adminVS.deleteUser(Long.valueOf(userid));
+	public String deleteUser(String userid,String recorder, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		this.adminVS.deleteUser(Long.valueOf(userid),recorder);
 		return "{}";
 	}
 

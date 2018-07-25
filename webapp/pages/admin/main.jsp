@@ -152,31 +152,36 @@ mini.open({
 		}
 
 	}
+
 	function remove() {
 
-		var rows = grid.getSelecteds();
-		if (rows.length > 0) {
-			if (confirm("确定删除选中记录？")) {
-				var ids = [];
-				for ( var i = 0, l = rows.length; i < l; i++) {
-					var r = rows[i];
-					ids.push(r.userid);
-				}
-				var id = ids.join(',');
-				grid.loading("操作中，请稍后......");
-				$.ajax({
-							url : '<%=request.getContextPath()%>/admin/deleteUser.action?userid='+id,
-							success : function(text) {
-								grid.reload();
-							},
-							error : function() {
-							}
-						});
-			}
+		var row = grid.getSelected();
+		if (row) {
+			mini.open({
+						url : '<%=request.getContextPath()%>/pages/admin/preDelete.jsp?userid='+row.userid,
+						title : "删除员工",
+						width : 500,
+						height : 300,
+						onload : function() {
+							/*var iframe = this.getIFrameEl();
+							var data = {
+								action : "edit",
+								id : row.id
+							};
+							iframe.contentWindow.SetData(data);*/
+
+						},
+						ondestroy : function(action) {
+							grid.reload();
+
+						}
+					});
+
 		} else {
 			alert("请选中一条记录");
 		}
 	}
+	
 	function search() {
 		var key = mini.get("key").getValue();
 		grid.load({
