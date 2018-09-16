@@ -174,7 +174,18 @@ function codeRender(e){
 	);
 	return retStr;
 }
-
+function oncodeRenderNew(e){
+    var retStr = '';
+    var data=getDiceDetail(e.field.toUpperCase());
+    if(!data||!data.appaa10List) return;
+    for(var i=0;i<data.appaa10List.length;i++) {
+        var g = data.appaa10List[i];
+        if(g.aaa102==e.value){
+            retStr=g.aaa103;
+        }
+    }
+    return retStr;
+}
 function codeRender(field,value){
 	var retStr = '';
 	var rootPath=getWebRootPath();

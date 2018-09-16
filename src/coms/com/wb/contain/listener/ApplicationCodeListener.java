@@ -1,11 +1,16 @@
 package com.wb.contain.listener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.wb.contain.listener.model.APPAA09Dto;
+import net.sf.json.JSON;
 import org.apache.log4j.Logger;
 
 import com.wb.contain.listener.model.APPAA09;
@@ -25,15 +30,24 @@ public class ApplicationCodeListener implements ServletContextListener {
 		logger.info("loading code begin...");
 		ServletContext context = contextEvent.getServletContext();
 		List<APPAA09> aa09s = CommonJdbcUtils.query("select * from app_aa09 where aae100='1'", APPAA09.class);
+		List<APPAA09Dto> appaa09Dtos=new ArrayList<APPAA09Dto>();
 		if (aa09s != null) {
 			String aa10sql = "select * from app_aa10 where aaa100=? and aae100='1' order by cae008 asc";
 			for (int i = 0; i < aa09s.size(); i++) {
 				List<APPAA10> aa10s = CommonJdbcUtils.query(aa10sql, APPAA10.class, aa09s.get(i).getAaa100());
+				APPAA09Dto appaa09Dto;
 				if (aa10s != null && aa10s.size() > 0) {
-					if (aa09s.get(i).getAaa100() != null)
+					if (aa09s.get(i).getAaa100() != null){
+						appaa09Dto=new APPAA09Dto();
+						appaa09Dto.setAaa100(aa09s.get(i).getAaa100());
+						appaa09Dto.setAppaa10List(aa10s);
+						appaa09Dtos.add(appaa09Dto);
 						context.setAttribute(aa09s.get(i).getAaa100().toUpperCase(), aa10s);
+					}
+
 				}
 			}
+			context.setAttribute("DICTJSON",new Gson().toJson(appaa09Dtos));
 		}
 		logger.info("loading code end...");
 	}

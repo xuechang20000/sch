@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="sch war">
+    <output-path>$PROJECT_DIR$/classes/artifacts/sch_war</output-path>
+    <root id="archive" name="sch war.war">
+      <element id="artifact" artifact-name="sch" />
+    </root>
+  </artifact>
+</component>
