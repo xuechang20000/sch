@@ -40,11 +40,24 @@
                     	<input class="mini-datepicker" style="width:150px;" id="e_date" name="e_date" />
                     	<a class="mini-button" id="id_onSerach" iconCls="icon-edit" onclick="onSerach">查询</a>
     </fieldset>
-   <div id="datagrid1" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true"
+
+	<div style="width:100%" id="id_patch">
+		<div class="mini-toolbar" style="border-bottom:0;padding:0px;">
+			<table style="width:100%;">
+				<tr>
+					<td style="width:100%;">
+						<a class="mini-button" iconCls="icon-add" onclick="patchDo()">批量操作</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+   <div id="datagrid1" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true" multiSelect="true"
         url="<%=request.getContextPath()%>/work/f100101/queryStuListByCurentUser.action"  idField="stuid"  pageSize='100'
     >
         <div property="columns">
-            <div field="stuid" width="120" headerAlign="center" align="center" visible="false" allowSort="true">学生id</div>    
+			<div type="checkcolumn" ></div>
+			<div field="stuid" width="120" headerAlign="center" align="center"  allowSort="true">学生id</div>
             <div field="groupname" width="70" headerAlign="center" align="center" allowSort="true">用户组名称</div>  
             <div field="stu_name" width="60" headerAlign="center" align="center" allowSort="true">学生姓名</div>  
             <div field="cellphone" width="90" headerAlign="center"  align="center" allowSort="true" renderer='oncellphoneRender'>手机</div> 
@@ -69,7 +82,9 @@ var grid=mini.get("datagrid1");
 var id='${id}';
 grid.load({processcode:id});
 var usergrouptype='${user.grouptypeclass}';
-
+if('05'==usergrouptype){
+    $("#id_patch").hide();
+}
 
 function onSerach(){
 	var stu_level=mini.get("stu_level").getValue();
@@ -139,6 +154,27 @@ function oncellphoneRender(e){
 	}else{
 		return e.value;
 	}
+}
+function patchDo(){
+    var rows=mini.get("datagrid1").getSelecteds();
+    if(rows.length>0){
+        var stuids='';
+        for(var i=0;i<rows.length;i++){
+            if(stuids=='')
+                stuids=$.trim(rows[i].stuid);
+            else
+                stuids=stuids+","+$.trim(rows[i].stuid);
+        }
+        var url = '<%=request.getContextPath()%>/work/f100101/execPatchNextStep.action';
+        Web.util.requestAsync(url,'POST',{stuids:stuids},
+            function(data){
+                onSerach();
+                mini.alert("保存成功！");
+            }
+        );
+    }else{
+        mini.alert("请选择记录");
+    }
 }
 </script>
 </html>
