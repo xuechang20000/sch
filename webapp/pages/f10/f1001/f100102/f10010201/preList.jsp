@@ -11,7 +11,18 @@
 	<style type="text/css">
 	#fd2{margin-bottom: 5px;}
     </style>
-    
+	<script type="text/javascript">
+        var DICTJSON=${applicationScope.DICTJSON}
+            function getDiceDetail(field) {
+                console.info(field)
+                var dict;
+                for(var i=0;dict=DICTJSON[i++];){
+                    if (dict.aaa100==field){
+                        return dict;
+                    }
+                }
+            }
+	</script>
 </head>
 <body>   
     <fieldset id="fd2">
@@ -37,7 +48,7 @@
             <div field="groupname" width="70" headerAlign="center" align="center" allowSort="true">用户组名称</div>  
             <div field="stu_name" width="60" headerAlign="center" align="center" allowSort="true">学生姓名</div>  
             <div field="cellphone" width="90" headerAlign="center"  align="center" allowSort="true" renderer='oncellphoneRender'>手机</div> 
-            <div field="stu_level" width="60" headerAlign="center"  align="center" allowSort="true" renderer='oncodeRender'>学生级别</div> 
+            <div field="stu_level" width="60" headerAlign="center"  align="center" allowSort="true" renderer='oncodeRenderNew'>学生级别</div>
 			<div field="recorderor" width="60" headerAlign="center"  align="center" allowSort="true" >学习顾问</div> 
 			<div field="followor" width="60" headerAlign="center"  align="center" allowSort="true" >跟进服务人</div> 
 			<div field="examlevelor" width="60" headerAlign="center"  align="center" allowSort="true" >报考层次</div> 
@@ -47,7 +58,7 @@
 			<div field="learningformor" width="60" headerAlign="center" align="center"  allowSort="true" >学习形式</div>  
 			<div field="manualschool" width="60" headerAlign="center" align="center"  allowSort="true" >手输院校</div> 
 			<div field="manualspecialty" width="60" headerAlign="center" align="center"  allowSort="true" >手输专业</div> 
-			<div field="blongrelation" width="60" headerAlign="center" align="center"  allowSort="true"  renderer='oncodeRender'>隶属关系</div>
+			<div field="blongrelation" width="60" headerAlign="center" align="center"  allowSort="true"  renderer='oncodeRenderNew'>隶属关系</div>
 			<div field="do" width="120" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO'>操作</div>        
         </div>
     </div>
@@ -94,7 +105,7 @@ function onOpenNext(){
 	var stuid=grid.getSelected().stuid;
 	//Web.util.openWindow("<%=request.getContextPath()%>/pages/f10/f1001/f100101/"+id+".jsp",{stuid:stuid},1100,600);
 	mini.open({
-			url :'<%=request.getContextPath()%>/pages/f10/f1001/f100101/'+id+'.jsp?stuid='+stuid,
+			url :'<%=request.getContextPath()%>/pages/f10/f1001/f100101/detail.jsp?stuid='+stuid,
 			title : "操作审批",
 			width : 1100,
 			height : 600,
