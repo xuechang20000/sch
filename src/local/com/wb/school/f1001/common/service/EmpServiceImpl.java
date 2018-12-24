@@ -864,6 +864,7 @@ public class EmpServiceImpl implements EmpService {
 		sp.setBookdate(new Date());
 		sp.setIspay(pay.getIspay());
 		sp.setComments(pay.getComments());
+		sp.setTicketnumber(pay.getTicketnumber());
 
 		CommonJdbcUtils.update(sp);
 	}

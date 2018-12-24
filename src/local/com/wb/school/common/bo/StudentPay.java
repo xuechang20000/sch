@@ -23,6 +23,7 @@ public class StudentPay {
 	private Date sdate;// timestamp 开始缴费期限
 	private Date edate;// timestamp 结束缴费期限
 	private String comments;// 备注
+	private String ticketnumber;//TICKETNUMBER;//票据编号
 
 	@Column(name = "payid", id = true)
 	@Sequence(name = "INCREMENT")
@@ -151,4 +152,12 @@ public class StudentPay {
 		return comments;
 	}
 
+	@Column(name = "ticketnumber")
+	public String getTicketnumber() {
+		return ticketnumber;
+	}
+
+	public void setTicketnumber(String ticketnumber) {
+		this.ticketnumber = ticketnumber;
+	}
 }
