@@ -119,5 +119,9 @@ function onRemindRender(e){
 	if(e.value=='1') return '已处理';
 	return '未处理';
 }
+$(document).ready(function () {
+
+    if(usergrouptype=='06') $("#exportExcel").hide();
+})
 </script>
 </html>

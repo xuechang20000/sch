@@ -378,6 +378,7 @@ mini.parse();
 //初始化加载
 var stuid='${param.stuid}';
 var processcode='${param.processcode}';
+var search='${param.search}';
 loadForm();
 function loadForm() {
   //加载表单数据
@@ -431,7 +432,9 @@ function loadForm() {
    						}
    					}
   				 });
-   			setbirthday();  
+   			setbirthday();
+   			//预报名查询去掉保存
+   			if(search=='1')  $("#doSubmit").hide();
    });
    
    

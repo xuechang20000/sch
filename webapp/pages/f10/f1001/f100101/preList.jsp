@@ -72,7 +72,7 @@
 			<div field="learningformor" width="60" headerAlign="center" align="center"  allowSort="true" >学习形式</div>  
 			<div field="manualschool" width="60" headerAlign="center" align="center"  allowSort="true" >手输院校</div> 
 			<div field="manualspecialty" width="60" headerAlign="center" align="center"  allowSort="true" >手输专业</div> 
-			<div field="stepcode" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >当前步骤</div> 
+			<div field="stepcode" width="60" headerAlign="center" align="center"  allowSort="true" >当前步骤</div>
 			<div field="blongrelation" width="60" headerAlign="center" align="center"  allowSort="true"  renderer='oncodeRenderNew'>隶属关系</div>
 			<div field="ctime" width="70" headerAlign="center" align="center" dateFormat="yyyy-MM-dd" allowSort="true" >预报名<br/>时间</div> 
 			<div field="do" width="110" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO'>操作</div>        

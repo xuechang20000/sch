@@ -166,6 +166,11 @@ public class F100101Action {
 		this.empService.deleteStudent(stuid);
 		return "";
 	}
+	@RequestMapping(value="distributePreStudent.action")
+	@ResponseBody
+	public void distributePreStudent(Long stuid,Long userid){
+		this.empService.updateDistributePreStudent(stuid,userid);
+	}
 	public void setEmpService(EmpService empService) {
 		this.empService = empService;
 	}

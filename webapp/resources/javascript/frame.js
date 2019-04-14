@@ -122,6 +122,20 @@ Web.util.openWindow = function(url,params,width,height){
 		    }
 		});
 }
+Web.util.openMiniWindow = function(title,url,width,height,callFunc){
+    mini.open({
+        url :url,
+        title : title,
+        width : width,
+        height : height,
+        onload : function() {
+        },
+        ondestroy : function(action) {
+            if(callFunc)
+                callFunc(action);
+        }
+    });
+}
 Web.util.tip = function(eid,text,postion,state,time){
 	var state__ = '';
 	var time__ = timeout__;

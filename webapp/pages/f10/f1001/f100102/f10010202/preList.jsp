@@ -7,7 +7,7 @@
 	<title>detail</title>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/miniui/boot.js "></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/javascript/frame.js "></script>
-	
+
 	<style type="text/css">
 	#fd2{margin-bottom: 5px;}
     </style>
@@ -117,5 +117,9 @@ function oncellphoneRender(e){
 		return e.value;
 	}
 }
+$(document).ready(function () {
+
+    if(usergrouptype=='06') $("#exportExcel").hide();
+})
 </script>
 </html>

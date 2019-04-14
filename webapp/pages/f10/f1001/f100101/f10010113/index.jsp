@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8"%>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -73,7 +73,7 @@
 		                    </td>
 		                    <td >身份证号：</td>
 		                    <td>
-		                          <input id="cardid" name="cardid" class="mini-textbox" required="true" onvalidation="onIDCardsValidation" vtype="rangeLength:18,18" /><font color="red">*</font> 
+		                          <input id="cardid" name="cardid" class="mini-textbox"  onvalidation="onIDCardsValidation" vtype="rangeLength:18,18" />
 		                    </td>
 		                </tr>
 		                 <tr>
@@ -369,7 +369,7 @@
                     	<input class="mini-datepicker" style="width:150px;" id="e_date" name="e_date" />
                     	<a class="mini-button" id="id_onSerach" iconCls="icon-edit" onclick="onSerach">查询</a>
     </fieldset>
-   <div id="datagrid1" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true" multiSelect="true" 
+   <div id="datagrid1" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true" multiSelect="true"
         url="<%=request.getContextPath()%>/work/f10010113/queryStuListByCurentUserPre.action"  idField="stuid"  pageSize='100'
     >
         <div property="columns">
@@ -392,7 +392,7 @@
 			<div field="enabled" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >是否报名</div> 
 			<div field="blongrelation" width="60" headerAlign="center" align="center"  allowSort="true"  renderer='oncodeRender'>隶属关系</div>
 			<div field="ctime" width="90" headerAlign="center" align="center" dateFormat="yyyy-MM-dd" allowSort="true" >预报名<br/>时间</div> 
-			<div field="do" width="90" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO'>操作</div>        
+			<div field="do" width="120" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO'>操作</div>
         </div>
     </div>
 	</div>
@@ -405,6 +405,7 @@
  -->
 </body>
 <script type="text/javascript">
+    var usergrouptype='${user.grouptypeclass}';
 $("td:even").css("text-align","right");
 $("td:odd").css("text-align","left");
 $("input").css("width","150px");
@@ -412,7 +413,6 @@ $("#comments").css("width","350px");
 $("#doSubmit").css("width","75px");
 mini.parse();
 var grid=mini.get("datagrid1");
-
 /**
 function loadForm() {
   //加载表单数据
@@ -548,15 +548,19 @@ function onSelectchanged(e){
 
     	function onrenderDO(e){
     		 var record = e.record;
-    		var link ='<a href="javascript:onOpenNext()">转报名</a>';
+    		var link='';
+			if("02"==usergrouptype){
+    		link ='<a href="javascript:onOpenNext()">转报名</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:onDistribution()">分配</a>&nbsp;&nbsp;&nbsp;&nbsp;';
     		if('0'==record.enabled){
 					link='已经报名 ';
         		}
+            }
+			link+='<a href="javascript:onOpenNext(1)">查询</a>'
     		return link;
     	}
-    	function onOpenNext(){
+    	function onOpenNext(search){
     		var stuid=grid.getSelected().stuid;
-    		var url='<%=request.getContextPath()%>/pages/f10/f1001/f100101/detail_pre.jsp?stuid='+stuid+'&processcode='+id;
+    		var url='<%=request.getContextPath()%>/pages/f10/f1001/f100101/detail_pre.jsp?stuid='+stuid+'&processcode='+id+'&search='+search;
     		mini.open({
     				url :url,
     				title : "预报名转报名",
@@ -565,9 +569,15 @@ function onSelectchanged(e){
     				onload : function() {
     				},
     				ondestroy : function(action) {
-    					onSerach();
+    					if(!search) onSerach();
     				}
     			});
     	}
+    	function onDistribution() {
+            var stuid=grid.getSelected().stuid;
+			Web.util.openMiniWindow("重新分配","${pageContext.request.contextPath}/pages/f10/f1001/f100101/f10010113/distribution.jsp?stuid="+stuid,500,300,function () {
+                onSerach();
+            })
+        }
     </script>
 </html>

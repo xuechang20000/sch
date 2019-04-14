@@ -157,5 +157,9 @@ function oncellphoneRender(e){
 		return e.value;
 	}
 }
+$(document).ready(function () {
+
+    if(usergrouptype=='06') $("#exportExcel").hide();
+})
 </script>
 </html>

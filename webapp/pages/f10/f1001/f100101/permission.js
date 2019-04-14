@@ -32,6 +32,7 @@ function setPermission(grouptypeclass,processcode){
 		setDisable(baseinfo);
 		setDisable(schoolinfo);
 		setDisable(otherinfo);
+		setHide(['cardid','cellphone','phone','qq','email','address'])
 	}else if('05'==grouptypeclass){
 		//setDisable(baseinfo);
 		//setDisable(schoolinfo);
@@ -84,4 +85,9 @@ function setEnable(list){
 	for(var i=0;i<list.length;i++){
 		mini.get(list[i]).enable();
 	}
+}
+function setHide(list) {
+    for(var i=0;i<list.length;i++){
+        mini.get(list[i]).setValue("******");
+    }
 }

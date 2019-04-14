@@ -994,4 +994,12 @@ public class EmpServiceImpl implements EmpService {
 		String sql="update t_birthday set remind='1' where stuid=? ";
 		CommonJdbcUtils.execute(sql,stuid);
 	}
+
+	/**
+	 * 重新分配 人员
+	 */
+	public void updateDistributePreStudent(Long stuid,Long userid){
+		String sql="update t_pre_student set RECORDER=? where stuid=? ";
+		CommonJdbcUtils.execute(sql,userid,stuid);
+	}
 }

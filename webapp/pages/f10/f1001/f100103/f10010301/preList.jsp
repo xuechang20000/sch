@@ -14,7 +14,7 @@
     
 </head>
 <body>   
-    <fieldset id="fd2">
+    <fieldset id="fd1">
     <legend><span>查询条件</span></legend>
 					学生级别：                
                           <input id="stu_level" name="stu_level" class="mini-combobox"  
@@ -149,6 +149,9 @@ function exprotExcel(){
 	        });
   	
 }
+$(document).ready(function () {
 
+    if(usergrouptype=='06') $("#id_onSerach").hide();
+})
 </script>
 </html>

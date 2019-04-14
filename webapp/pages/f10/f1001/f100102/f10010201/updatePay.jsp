@@ -59,6 +59,10 @@
                           <input id="ispay" name="ispay" class="mini-combobox"  textField="text" valueField="id" 
      						data="[{'id':'0','text':'未缴费'},{'id':'1','text':'已缴费'}]"	required="true" allowInput="true"/>   
                     </td>
+                    <td >财务审核收据编号：</td>
+                <td>
+                        <input id="ticketnumber" name="ticketnumber" class="mini-textbox"  />
+                    </td>
                 </tr>
                 <tr>
                     <td >备注：</td>
@@ -99,10 +103,11 @@ function submitForm(){
     var bookin=mini.get("bookin").getValue();
     var ispay=mini.get("ispay").getValue();
     var comments=mini.get("comments").getValue();
+    var ticketnumber=mini.get("ticketnumber").getValue();
     $.ajax({
         url: "<%=request.getContextPath()%>/work/f10010201/updateStudentPay.action",
         type: "post",
-        data: {payid:payid, payable:payable,paidin:paidin,bookable:bookable,bookin:bookin,ispay:ispay,comments:comments },
+        data: {payid:payid, payable:payable,paidin:paidin,bookable:bookable,bookin:bookin,ispay:ispay,comments:comments,ticketnumber:ticketnumber },
         success: function (text) {
             alert("保存成功!");
             mini.get("id_saveuser").disable();
