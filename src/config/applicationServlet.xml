@@ -78,13 +78,13 @@
 			<mvc:mapping path="/**"/>
 			<bean class="com.wb.login.interceptor.BusinessContextInterceptor"></bean>
 		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/**"/>
-			<mvc:exclude-mapping path="/validationCode/**" />
-			<mvc:exclude-mapping path="/workspace/**" />
-			<mvc:exclude-mapping path="/common/**" />
-			<bean class="com.wb.login.interceptor.UrlLogInterceptor"></bean>
-		</mvc:interceptor>
+		<!--<mvc:interceptor>-->
+			<!--<mvc:mapping path="/**"/>-->
+			<!--<mvc:exclude-mapping path="/validationCode/**" />-->
+			<!--<mvc:exclude-mapping path="/workspace/**" />-->
+			<!--<mvc:exclude-mapping path="/common/**" />-->
+			<!--<bean class="com.wb.login.interceptor.UrlLogInterceptor"></bean>-->
+		<!--</mvc:interceptor>-->
 		<mvc:interceptor>
 			<mvc:mapping path="/**"/>
 			<mvc:exclude-mapping path="/validationCode/**" />

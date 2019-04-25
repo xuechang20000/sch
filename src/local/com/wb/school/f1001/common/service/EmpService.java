@@ -57,4 +57,5 @@ public interface EmpService {
 	void queryStuListByBirthdayRemind(Page page, StudentVO vo);
 	public void updateBirthdayRemind(Long stuid);
 	public void updateDistributePreStudent(Long stuid,Long userid);
+	public void queryStuListByCurentUserPreDis(Page page, StudentVO vo);
 }

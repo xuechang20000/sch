@@ -359,10 +359,11 @@
                 </tr>
                 <tr>
             	<td></td>
-	            <td colspan="2">
-	                <input value="保存" id="doSubmit" type="button" onclick="submitForm()" />
+	            <td colspan="3">
+	                <input value="转正式报名 " size="30" id="doSubmit" type="button" onclick="submitForm()" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+	                <input value="完善报名数据" id="doCompleate" type="button" onclick="compleate()" />
 	            </td>
-	            <td></td>
         		</tr>
             </table>
 </div>
@@ -469,7 +470,35 @@ function submitForm() {
                    }
                 }); 
             }
- 
+//完善数据
+function compleate() {
+    var form = new mini.Form("#form1");
+    // form.validate();
+    // if (form.isValid() == false) {
+    //     mini.alert('填写有误，请修正！');
+    //     return;
+    // }
+    mini.confirm("此操作只完善报名数据，不做正式报名！", "确定？",
+        function (action) {
+            if (action == "ok") {
+                //提交表单数据
+                var url = '<%=request.getContextPath()%>/work/f10010113/preAddStudent.action';
+                var form = new mini.Form("#form1");
+                var data = form.getData(true);      //获取表单多个控件的数据
+                data.notNext='1';
+                Web.util.requestAsync(url,'',data,function(data,textstatus){
+                    mini.alert("保存成功！ ");
+                });
+                /*Web.util.formSubmit("form1",url,"post",function(data,textstatus){
+                        mini.alert("保存成功！ ");
+                        $("#doSubmit").attr("disabled","disabled");
+                    });*/
+            }
+        }
+    );
+
+
+}
   
 function onSelectchanged(e){
 

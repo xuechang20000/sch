@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.wb.utils.web.common.StringTools;
 import org.springframework.beans.BeanUtils;
 
 import com.wb.admin.bo.OrganUser;
@@ -29,6 +30,7 @@ import com.wb.school.f1001.common.vo.ProcessDTO;
 import com.wb.school.f1001.common.vo.StudentExtVO;
 import com.wb.school.f1001.common.vo.StudentVO;
 import com.wb.user.utils.BusinessContextUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 职工信息查询公用Service
@@ -81,7 +83,7 @@ public class EmpServiceImpl implements EmpService {
 	public void addStudentPre(StudentPre stu) {
 		String sql = "select * from t_pre_student where cardid=? and (enabled is null or enabled='1') and CTIME > DATE_SUB(CURDATE(),INTERVAL dayofyear(now())-1 DAY) ";
 		Student student = CommonJdbcUtils.queryFirst(sql, Student.class, stu.getCardid());
-		if (student != null) {
+		if (student != null&& stu.getStuid()==null) {
 			throw new BusinessException("该身份证号人员已经存在！");
 		}
 		stu.setEnabled("1");
@@ -89,18 +91,21 @@ public class EmpServiceImpl implements EmpService {
 		stu.setProcesscode("z");
 		stu.setStepcode("z1");
 		stu.setIsfall("0");
-		CommonJdbcUtils.save(stu);
-		
+		if (stu.getStuid()!=null)
+		CommonJdbcUtils.update(stu);
+		else
+			CommonJdbcUtils.save(stu);
 		// 写日志
 		ProcessDTO pdto = new ProcessDTO();
 		pdto.setNext_processcode("z");
 		pdto.setNext_stepcode("z1");
 		saveLog(pdto, stu.getStuid(), stu.getStu_name());
 	}
+	@Transactional
 	public void updateStudentPreToAlready(StudentPre stu) {
 		String sql = "update t_pre_student set enabled='0' where stuid=? ";
 		CommonJdbcUtils.execute(sql, stu.getStuid());
-		
+		CommonJdbcUtils.execute("delete from t_pre_student_dis where stuid=?",stu.getStuid());
 	}
 	@Override
 	public void addStudentExt(Student stu) {
@@ -317,6 +322,9 @@ public class EmpServiceImpl implements EmpService {
 						+ "  ");
 		sb.append("   AND B.NODEID IN                                                                        ");
 		sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan(?)))    ");
+		//超过30天进入待分配池
+		sb.append(" and (a.CTIME >= DATE_SUB(CURDATE(),INTERVAL 30 DAY)  " +
+				" or a.stuid in (select stuid from t_pre_student_dis where record="+user.getUserid()+")) ");
 		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
 			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
 		}
@@ -330,6 +338,68 @@ public class EmpServiceImpl implements EmpService {
 			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
 		}
 		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, "z", ou.getNodeid());
+	}
+	/**
+	 * 查询预报名待分配列表
+	 */
+	@Override
+	public void queryStuListByCurentUserPreDis(Page page, StudentVO vo) {
+		StringBuffer sb = new StringBuffer();
+		UserVO user = BusinessContextUtils.getUserContext();
+		OrganUser ou = CommonJdbcUtils.queryFirst("select * from app_organ_user where userid=?", OrganUser.class,
+				user.getUserid());
+		if (ou == null)
+			return;
+		Long groupid = user.getGrouptypeid();
+		sb.append("SELECT (SELECT GROUPNAME                                                                      ");
+		sb.append("          FROM APP_GROUP, APP_GROUP_USER                                                      ");
+		sb.append("         WHERE APP_GROUP_USER.GROUPID = APP_GROUP.GROUPID                                     ");
+		sb.append("           AND APP_GROUP_USER.USERID = A.RECORDER) GROUPNAME,                                 ");
+		sb.append("       A.STUID,                                                                               ");
+		sb.append("       A.STU_NAME,                                                                            ");
+		sb.append("       A.CEllPHONE,                                                                               ");
+		sb.append("       A.STU_LEVEL,                                                                           ");
+		sb.append("       A.RECORDER,                                                                            ");
+		sb.append("       (SELECT NAME FROM app_user WHERE userid=a.recorder) RECORDEROR,                        ");
+		sb.append("       A.FOLLOW,                                                                              ");
+		sb.append("       (SELECT NAME FROM app_user WHERE userid=a.FOLLOW) FOLLOWOR,                            ");
+		sb.append("       A.EXAMLEVEL,                                                                           ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.examlevel) examlevelor,                          ");
+		sb.append("       A.EXAMCLASS,                                                                           ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.EXAMCLASS) EXAMCLASSor,                          ");
+		sb.append("       A.FIRSTWISHSCHOOL,                                                                     ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.FIRSTWISHSCHOOL) FIRSTWISHSCHOOLor,              ");
+		sb.append("       A.FIRSTWISHSPECIALTY,                                                                  ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.FIRSTWISHSPECIALTY) FIRSTWISHSPECIALTYor,        ");
+		sb.append("       A.LEARNINGFORM,                                                                        ");
+		sb.append("        (SELECT NAME FROM t_school WHERE ID=a.LEARNINGFORM) LEARNINGFORMor,                   ");
+		sb.append("       A.MANUALSCHOOL,                                                                        ");
+		sb.append("       A.MANUALSPECIALTY,                                                                     ");
+		sb.append(
+				"       A.BLONGRELATION,a.ctime,a.stepcode,a.enabled,a.comments                                                                     ");
+		sb.append("  FROM t_pre_student A, APP_ORGAN_USER B                                                        ");
+		sb.append(
+				" WHERE A.RECORDER = B.USERID   and a.processcode=?  "
+						+ "  ");
+//		sb.append("   AND B.NODEID IN                                                                        ");
+//		sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan(?)))    ");
+		//超过30天进入待分配池
+		sb.append(" and a.CTIME < DATE_SUB(CURDATE(),INTERVAL 30 DAY)  " +
+				"and a.stuid not in (select stuid from t_pre_student_dis) " +
+				"and a.enabled='1' " );
+		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
+			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
+		}
+		if (vo.getStu_level() != null && vo.getStu_level().length() > 0 && vo.getStu_level().length() < 10) {
+			sb.append(" and a.stu_level=" + vo.getStu_level() + "  ");
+		}
+		if (vo.getS_date() != null && vo.getS_date().length() > 0) {
+			sb.append(" AND a.ctime>=to_date('" + vo.getS_date() + "','yyyymmdd')  ");
+		}
+		if (vo.getE_date() != null && vo.getE_date().length() > 0) {
+			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
+		}
+		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, "z");
 	}
 	/**
 	 * 查询待操作列表
@@ -998,8 +1068,14 @@ public class EmpServiceImpl implements EmpService {
 	/**
 	 * 重新分配 人员
 	 */
+	@Transactional
 	public void updateDistributePreStudent(Long stuid,Long userid){
+		List<StudentVO> studentVOS=CommonJdbcUtils.query("select * from t_pre_student_dis where record=?",StudentVO.class,userid);
+		if (studentVOS.size()>=5){
+			throw new BusinessException("该老师已经分配"+studentVOS.size()+"人，不能继续分配！");
+		}
 		String sql="update t_pre_student set RECORDER=? where stuid=? ";
 		CommonJdbcUtils.execute(sql,userid,stuid);
+		CommonJdbcUtils.execute("insert into t_pre_student_dis values(?,?,'1')",stuid,userid);
 	}
 }

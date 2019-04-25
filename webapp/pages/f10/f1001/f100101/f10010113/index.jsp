@@ -353,7 +353,7 @@
 		            </table>
 		</div>
 	</div>
-	<div title="查询">
+	<div title="我的">
 		<fieldset id="fd2">
     <legend><span>查询条件</span></legend>
 					学生级别：                
@@ -396,6 +396,50 @@
         </div>
     </div>
 	</div>
+	<div title="公共池">
+		<fieldset id="fd3">
+			<legend><span>查询条件</span></legend>
+			学生级别：
+			<input id="stu_level2" name="stu_level" class="mini-combobox"
+				   textField="aaa103" valueField="aaa102"  url="<%=request.getContextPath()%>/common/code.action?codename=stu_level" showNullItem="true" allowInput="true"/>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			学生姓名:
+			<input id="stu_name2" name="stu_name" class="mini-textbox"/>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			自：
+			<input class="mini-datepicker" style="width:150px;" id="s_date2" name="s_date"  />
+			至
+			<input class="mini-datepicker" style="width:150px;" id="e_date2" name="e_date" />
+			<a class="mini-button" id="id_onSerach2" iconCls="icon-edit" onclick="onSerach2">查询</a>
+		</fieldset>
+		<div id="datagrid2" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true" multiSelect="true"
+			 url="<%=request.getContextPath()%>/work/f10010113/queryStuListByCurentUserPreDis.action"  idField="stuid"  pageSize='100'
+		>
+			<div property="columns">
+
+				<div field="stuid" width="120" headerAlign="center" align="center" visible="false" allowSort="true">学生id</div>
+				<div field="groupname" width="70" headerAlign="center" align="center" visible='false' allowSort="true">用户组名称</div>
+				<div field="stu_name" width="60" headerAlign="center" align="center" visible='false' allowSort="true">学生姓名</div>
+				<div field="cellphone" width="90" headerAlign="center"  align="center" visible='false' allowSort="true" renderer='oncellphoneRender'>手机</div>
+				<div field="stu_level" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" renderer='oncodeRender'>学生级别</div>
+				<div field="recorderor" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" >学习顾问</div>
+				<div field="followor" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" >跟进<br/>服务人</div>
+				<div field="examlevelor" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" >报考层次</div>
+				<div field="examclassor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >考试科类</div>
+				<div field="firstwishschoolor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >一志愿<br/>院校</div>
+				<div field="firstwishspecialtyor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >一志愿<br/>专业</div>
+				<div field="learningformor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >学习形式</div>
+				<div field="manualschool" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >手输院校</div>
+				<div field="manualspecialty" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >手输专业</div>
+				<div field="stepcode" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >当前步骤</div>
+				<div field="enabled" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >是否报名</div>
+				<div field="blongrelation" width="60" headerAlign="center" align="center" visible='false'  allowSort="true"  renderer='oncodeRender'>隶属关系</div>
+				<div field="comments" width="330" headerAlign="center" align="center"  allowSort="true">备注</div>
+				<div field="ctime" width="40" headerAlign="center" align="center" dateFormat="yyyy-MM-dd" allowSort="true" >预报名<br/>时间</div>
+				<div field="do" width="40" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO2'>操作</div>
+			</div>
+		</div>
+	</div>
 </div>
 <!-- 
 <div id="img">
@@ -406,6 +450,7 @@
 </body>
 <script type="text/javascript">
     var usergrouptype='${user.grouptypeclass}';
+    var userId=${user.userid};
 $("td:even").css("text-align","right");
 $("td:odd").css("text-align","left");
 $("input").css("width","150px");
@@ -413,6 +458,7 @@ $("#comments").css("width","350px");
 $("#doSubmit").css("width","75px");
 mini.parse();
 var grid=mini.get("datagrid1");
+var grid2=mini.get("datagrid2");
 /**
 function loadForm() {
   //加载表单数据
@@ -501,7 +547,8 @@ function onSelectchanged(e){
     	$(".form-table td:even").css("background-color","#c5d2e4");
     	$(".form-table td:odd").css("background-color","#f0f0f0");
     	onSerach();
-    	var aCity={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外"} 
+    	onSerach2();
+    	var aCity={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外"}
     	function onIDCardsValidation(e) {
     	    if (e.isValid) {
     	        var pattern = /\d*/;
@@ -545,17 +592,35 @@ function onSelectchanged(e){
     		if(e_date) e_date=mini.formatDate(e_date,'yyyyMMdd');
     		grid.load({stu_level:stu_level,stu_name:stu_name,s_date:s_date,e_date:e_date,processcode:id});
     	}
+    	function onSerach2(){
+
+    		var stu_level=mini.get("stu_level2").getValue();
+    		var stu_name =mini.get("stu_name2").getValue();
+    		var s_date =mini.get("s_date2").getValue();
+    		var e_date =mini.get("e_date2").getValue();
+    		if(s_date) s_date=mini.formatDate(s_date,'yyyyMMdd');
+    		if(e_date) e_date=mini.formatDate(e_date,'yyyyMMdd');
+    		grid2.load({stu_level:stu_level,stu_name:stu_name,s_date:s_date,e_date:e_date,processcode:id});
+    	}
 
     	function onrenderDO(e){
     		 var record = e.record;
+            if('0'==record.enabled) return '已经报名 ';
     		var link='';
-			if("02"==usergrouptype){
-    		link ='<a href="javascript:onOpenNext()">转报名</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:onDistribution()">分配</a>&nbsp;&nbsp;&nbsp;&nbsp;';
-    		if('0'==record.enabled){
-					link='已经报名 ';
-        		}
+			if("02"==usergrouptype){//如果是校长可以重新分配
+    		link ='<a href="javascript:onDistribution()">分配</a>&nbsp;&nbsp;&nbsp;&nbsp;';
             }
+            if(true){//如果未超过30天，可以招生老师转报名
+			link+="<a href=\"javascript:onOpenNext()\">操作</a>&nbsp;&nbsp;&nbsp;&nbsp;"
+			}
 			link+='<a href="javascript:onOpenNext(1)">查询</a>'
+    		return link;
+    	}
+    	function onrenderDO2(e){
+    		 var record = e.record;
+            if('0'==record.enabled) return '已经报名 ';
+    		var link='';
+    		link ='<a href="javascript:onGet()">获取</a>&nbsp;&nbsp;&nbsp;&nbsp;';
     		return link;
     	}
     	function onOpenNext(search){
@@ -577,6 +642,14 @@ function onSelectchanged(e){
             var stuid=grid.getSelected().stuid;
 			Web.util.openMiniWindow("重新分配","${pageContext.request.contextPath}/pages/f10/f1001/f100101/f10010113/distribution.jsp?stuid="+stuid,500,300,function () {
                 onSerach();
+            })
+        }
+    	function onGet() {
+            var stuid=grid2.getSelected().stuid;
+           var  url= '<%=request.getContextPath()%>/work/f100101/distributePreStudent.action?stuid='+stuid+'&userid='+userId;
+            Web.util.request(url,"post",{},function () {
+                mini.alert("获取成功!");
+                onSerach2();
             })
         }
     </script>
