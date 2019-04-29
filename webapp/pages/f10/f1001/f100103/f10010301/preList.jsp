@@ -44,16 +44,32 @@
                           <input id="step" name="step" class="mini-combobox"  
                           textField="name" valueField="id"  url="<%=request.getContextPath()%>/work/f10010202/queryProcessStepParams.action?param=step" showNullItem="true" allowInput="true"/> 
                     	
-                    	<a class="mini-button" id="id_onSerach" iconCls="icon-add" onclick="exprotExcel();">导出</a>
+                    	<a class="mini-button" id="id_onSerach" iconCls="icon-add" onclick="exprotExcel2();">导出</a>
+                    	<a class="mini-button" id="id_download" iconCls="icon-add" onclick="download();">查询下载</a>
     </fieldset>
-        <fieldset id="fd2">
+
+	<fieldset id="fd2" style="width: 62%;float:left">
     <legend><span>导出项选择</span></legend>
 					<div id="cbl1" class="mini-checkboxlist" repeatItems="6" repeatLayout="table"
 				    textField="colname" valueField="columnname" value="" 
 				    url="<%=request.getContextPath()%>/work/f100101/queryExportSets.action?iscall=1" >
 			</div>
     </fieldset>
-    
+	<fieldset id="fd3" style="width: 30%;float:left;margin-left: 10px">
+    <legend><span>导出项选择</span></legend>
+		<div id="datagrid2" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true"
+			 url="<%=request.getContextPath()%>/common/querySavedFiles.action"
+			 idField="stuid"  pageSize='100'  sortMode="client"    >
+			<div property="columns">
+				<div field="fileid" width="120" headerAlign="center" align="center" visible="false" allowSort="true">学生id</div>
+				<div field="filepath" width="100" headerAlign="center" align="center" allowSort="true">文件</div>
+				<div field="ctime" width="70" headerAlign="center" align="center" dateFormat="yyyy-MM-dd HH:mm:ss" allowSort="true">创建时间</div>
+				<div field="iscomplete" width="60" headerAlign="center" align="center" visible="false" allowSort="true"></div>
+				<div field="do" width="40" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO'>下载</div>
+			</div>
+		</div>
+	</fieldset>
+
     
    <div id="datagrid1" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true" visible="false"
         url="<%=request.getContextPath()%>/work/f100101/queryExport.action" 
@@ -86,10 +102,14 @@
 <script type="text/javascript">
 mini.parse();
 var grid=mini.get("datagrid1");
+var grid2=mini.get("datagrid2");
 Web.util.load("datagrid1",{});
+Web.util.load("datagrid2",{"userid":'${user.userid}'});
 var usergrouptype='${user.grouptypeclass}';
 mini.get("cbl1").setValue('deptname,stuid,educationtype,stu_level,stu_name,sex,nation,politicalstatus,cardid,cellphone,phone,qq');
-
+function download() {
+    Web.util.load("datagrid2",{"userid":'${user.userid}'});
+}
 function getParams(){
 	/*var stu_level=mini.get("stu_level").getValue();
 	var stu_name =mini.get("stu_name").getValue();
@@ -148,6 +168,58 @@ function exprotExcel(){
 	    	  	
 	        });
   	
+}
+function exprotExcel2(){
+	var grid=mini.get("datagrid1");
+
+	var params = getParams();
+
+	if(!params){
+		return;
+	}
+
+	    var cs=new Array();
+	    var columns = mini.get("cbl1").getValue();
+	    var url="<%=request.getContextPath()%>/work/f100101/queryExportSetsByarrays.action";
+	    Web.util.request(url,'',{arrays:columns},function(data,textstatus){
+	    	 for (var i= data.length-1; i>=0;i--) {
+	         	  var c = {header:data[i].colname,field:data[i].columnname,width:100,code:data[i].iscode};
+	              cs.push(c);
+	    		 }
+    		    cs=cs.reverse();
+	    	    params.url = grid.url;
+	    	  	params.header = mini.encode(cs);
+	    	  	params.pageIndex = 0;
+	    	  	params.pageSize = 65535;
+
+	    	  	var url="<%=request.getContextPath()%>/common/saveExcel.action";
+				Web.util.request(url,"post",params,function () {
+
+                })
+            mini.showTips({
+                content: "<font color='blue'>后台正在导出，请稍后</font>",
+                timeout: 3000
+            });
+				mini.get("id_onSerach").disable();
+            Web.util.load("datagrid2",{"userid":'${user.userid}'});
+	        });
+
+}
+function onrenderDO(e){
+    var iscomplete=e.record.iscomplete;
+    console.info(e)
+    if('1'==iscomplete)
+    var link ='<a href="javascript:onDO()">下载</a>';
+    else
+        var link ='正在生成……';
+    return link;
+}
+
+function onDO(){
+    var fileid=grid2.getSelected().fileid;
+    var filepath=grid2.getSelected().filepath;
+    var url='<%=request.getContextPath()%>/common/downloadFile.action?fileid='+fileid+"&filepath="+filepath;
+    window.open(url);
 }
 $(document).ready(function () {
 

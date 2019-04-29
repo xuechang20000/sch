@@ -12,6 +12,9 @@
 <body>
 	<form action="<%=request.getContextPath()%>/common/exportExcel.action" id="excelForm__" name="excelForm__" method="post"></form>
 </body>
-	
+<body>
+	<form action="<%=request.getContextPath()%>/common/saveExcel.action" id="excelForm2__" name="excelForm2__" method="post"></form>
+</body>
+
 </html>
 	

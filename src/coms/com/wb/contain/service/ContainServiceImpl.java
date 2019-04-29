@@ -1,10 +1,19 @@
 package com.wb.contain.service;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
+
+import com.wb.jdbcutils.CommonJdbcUtils;
+import com.wb.jdbcutils.Page;
+import com.wb.login.SessionUtils;
+import com.wb.school.common.bo.TFile;
+import com.wb.user.utils.BusinessContextUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -19,7 +28,7 @@ import com.wb.utils.web.JsonUtils;
 
 public class ContainServiceImpl implements ContainService {
 	@Override
-	public String exportExcel(ServletOutputStream outputStream, ServletContext context, String header, String jsonData)
+	public String exportExcel(OutputStream outputStream, ServletContext context, String header, String jsonData)
 			throws IOException {
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet();
@@ -163,5 +172,40 @@ public class ContainServiceImpl implements ContainService {
 		 */
 		return "";
 	}
-
+	public void updateToComplete(Long fileid){
+		if (fileid!=null)
+			CommonJdbcUtils.execute("update t_file set iscomplete='1' where fileid=?",fileid);
+	}
+	public TFile saveFile(TFile tFile){
+		CommonJdbcUtils.save(tFile);
+		return  tFile;
+	}
+	public TFile saveFile(String filePath,String busiType){
+		TFile tFile=new TFile();
+		tFile.setFilepath(filePath);
+		tFile.setCtime(new Date());
+		tFile.setBusitype(busiType);
+		//Long userid = (Long)request.getSession().getAttribute(SessionUtils.USERID);
+		tFile.setUserid(BusinessContextUtils.getUserContext().getUserid().toString());
+		saveFile(tFile);
+		return  tFile;
+	}
+	public  void querySavedFile(Page page, TFile tFile){
+		StringBuffer sql=new StringBuffer("select * from t_file where 1=1 ");
+		List<String> args=new ArrayList<String>();
+		if (tFile.getFileid()!=null){
+			sql.append("and fileid=?");
+			args.add(tFile.getFileid().toString());
+		}
+		if (tFile.getUserid()!=null){
+			sql.append("and userid=?");
+			args.add(tFile.getUserid().toString());
+		}
+		if (tFile.getBusitype()!=null){
+			sql.append("and busitype=?");
+			args.add(tFile.getBusitype().toString());
+		}
+		sql.append(" order by ctime desc");
+		CommonJdbcUtils.queryPage(page,sql.toString(),TFile.class,args.toArray());
+	}
 }
