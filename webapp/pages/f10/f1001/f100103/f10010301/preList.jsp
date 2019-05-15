@@ -56,7 +56,7 @@
 			</div>
     </fieldset>
 	<fieldset id="fd3" style="width: 30%;float:left;margin-left: 10px">
-    <legend><span>导出项选择</span></legend>
+    <legend><span>查询下载</span></legend>
 		<div id="datagrid2" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true"
 			 url="<%=request.getContextPath()%>/common/querySavedFiles.action"
 			 idField="stuid"  pageSize='100'  sortMode="client"    >
@@ -223,7 +223,7 @@ function onDO(){
 }
 $(document).ready(function () {
 
-    if(usergrouptype=='06') $("#id_onSerach").hide();
+    //if(usergrouptype=='06') $("#id_onSerach").hide();
 })
 </script>
 </html>

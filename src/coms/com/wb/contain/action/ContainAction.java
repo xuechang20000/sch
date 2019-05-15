@@ -161,8 +161,8 @@ public class ContainAction {
 		String useridMd5 = UUID.randomUUID().toString();
 		String filePath=null;
 		OutputStream outputStream = null;
-		//String filePath="/mnt/files/"+useridMd5+".xls";
-		filePath = "e:/" + useridMd5 + ".xls";
+		 filePath="/mnt/files/"+useridMd5+".xls";
+        //filePath = "e:/" + useridMd5 + ".xls";
 		TFile tFile=containService.saveFile(filePath, "A");
 
 		outputStream = new FileOutputStream(filePath);
