@@ -3,6 +3,19 @@
     <output-path>$PROJECT_DIR$/classes/artifacts/sch_war</output-path>
     <root id="archive" name="sch war.war">
       <element id="artifact" artifact-name="sch" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$PROJECT_DIR$/libs/spring/spring-aop-4.3.9.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/libs/spring/spring-beans-4.3.9.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/libs/spring/spring-context-4.3.9.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/libs/spring/spring-core-4.3.9.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/libs/spring/spring-expression-4.3.9.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/libs/spring/spring-jdbc-4.3.9.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/libs/spring/spring-tx-4.3.9.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/libs/spring/spring-web-4.3.9.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/libs/spring/spring-webmvc-4.3.9.RELEASE.jar" />
+        </element>
+      </element>
     </root>
   </artifact>
 </component>
