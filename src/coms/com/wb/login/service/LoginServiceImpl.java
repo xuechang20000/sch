@@ -137,7 +137,7 @@ public class LoginServiceImpl implements LoginService {
 			throw new BusinessException("用户名不能为空！");
 		if (null == dto.getPassword())
 			throw new BusinessException("密码不能为空！");
-		String sql = "select * from app_user where LOGINNAME=? and password=?";
+		String sql = "select * from app_user where LOGINNAME=? and password=? and removed='0' ";
 		return CommonJdbcUtils.queryFirst(sql, User.class, dto.getLoginname(), dto.getPassword());
 	}
 
