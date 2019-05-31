@@ -67,9 +67,18 @@ public class F10010113Action {
 	}
 	@RequestMapping(value="queryStuListByCurentUserPreDis.action")
 	@ResponseBody
-	public String queryStuListByCurentUserPreDis(StudentVO vo,HttpServletRequest request,HttpServletResponse response) throws Exception{
+	public String queryStuListByCurentUserPreDis(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		int pageSize = RequestUtils.getParameter(request, "pageSize", 0);
 		int pageIndex = RequestUtils.getParameter(request, "pageIndex", 0);
+		StudentVO vo = new StudentVO();
+		String stu_name = request.getParameter("stu_name");
+		String stu_level = request.getParameter("stu_level");
+		String s_date = request.getParameter("s_date");
+		String e_date = request.getParameter("e_date");
+		vo.setStu_name(stu_name);
+		vo.setStu_level(stu_level);
+		vo.setS_date(s_date);
+		vo.setE_date(e_date);
 		Page page = new Page();
 		page.setPageno(pageIndex+1);
 		page.setPagesize(pageSize);

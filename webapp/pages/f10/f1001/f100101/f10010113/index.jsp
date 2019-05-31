@@ -413,32 +413,34 @@
 			<a class="mini-button" id="id_onSerach2" iconCls="icon-edit" onclick="onSerach2">查询</a>
 		</fieldset>
 		<div id="datagrid2" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true" multiSelect="true"
+			 pagerButtons="#exportExcel"
 			 url="<%=request.getContextPath()%>/work/f10010113/queryStuListByCurentUserPreDis.action"  idField="stuid"  pageSize='100'
 		>
 			<div property="columns">
 
 				<div field="stuid" width="120" headerAlign="center" align="center" visible="false" allowSort="true">学生id</div>
-				<div field="groupname" width="70" headerAlign="center" align="center" visible='false' allowSort="true">用户组名称</div>
-				<div field="stu_name" width="60" headerAlign="center" align="center" visible='false' allowSort="true">学生姓名</div>
-				<div field="cellphone" width="90" headerAlign="center"  align="center" visible='false' allowSort="true" renderer='oncellphoneRender'>手机</div>
-				<div field="stu_level" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" renderer='oncodeRender'>学生级别</div>
-				<div field="recorderor" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" >学习顾问</div>
-				<div field="followor" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" >跟进<br/>服务人</div>
-				<div field="examlevelor" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" >报考层次</div>
-				<div field="examclassor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >考试科类</div>
-				<div field="firstwishschoolor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >一志愿<br/>院校</div>
-				<div field="firstwishspecialtyor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >一志愿<br/>专业</div>
-				<div field="learningformor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >学习形式</div>
-				<div field="manualschool" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >手输院校</div>
-				<div field="manualspecialty" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >手输专业</div>
-				<div field="stepcode" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >当前步骤</div>
-				<div field="enabled" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >是否报名</div>
-				<div field="blongrelation" width="60" headerAlign="center" align="center" visible='false'  allowSort="true"  renderer='oncodeRender'>隶属关系</div>
-				<div field="comments" width="330" headerAlign="center" align="center"  allowSort="true">备注</div>
-				<div field="ctime" width="40" headerAlign="center" align="center" dateFormat="yyyy-MM-dd" allowSort="true" >预报名<br/>时间</div>
+				<div field="groupname" name="groupname" width="70" headerAlign="center" align="center" visible='false' allowSort="true">用户组名称</div>
+				<div field="stu_name" name="stu_name" width="60" headerAlign="center" align="center" visible='false' allowSort="true">学生姓名</div>
+				<div field="cellphone" name="cellphone" width="90" headerAlign="center"  align="center" visible='false' allowSort="true" renderer='oncellphoneRender'>手机</div>
+				<div field="stu_level" name="stu_level" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" renderer='oncodeRender'>学生级别</div>
+				<div field="recorderor" name="recorderor" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" >学习顾问</div>
+				<div field="followor" name="followor" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" >跟进<br/>服务人</div>
+				<div field="examlevelor" name="examlevelor" width="60" headerAlign="center"  align="center" visible='false' allowSort="true" >报考层次</div>
+				<div field="examclassor" name="examclassor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >考试科类</div>
+				<div field="firstwishschoolor" name="firstwishschoolor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >一志愿<br/>院校</div>
+				<div field="firstwishspecialtyor" name="firstwishspecialtyor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >一志愿<br/>专业</div>
+				<div field="learningformor" name="learningformor" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >学习形式</div>
+				<div field="manualschool" name="manualschool" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >手输院校</div>
+				<div field="manualspecialty" name="manualspecialty" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >手输专业</div>
+				<div field="stepcode" name="stepcode" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >当前步骤</div>
+				<div field="enabled" name="enabled" width="60" headerAlign="center" align="center" visible='false' allowSort="true" >是否报名</div>
+				<div field="blongrelation" name="blongrelation" width="60" headerAlign="center" align="center" visible='false'  allowSort="true"  renderer='oncodeRender'>隶属关系</div>
+				<div field="comments" width="40" headerAlign="center" align="center"  allowSort="true">备注</div>
+				<div field="ctime" name="ctime" width="40" headerAlign="center" align="center" dateFormat="yyyy-MM-dd" allowSort="true" >预报名<br/>时间</div>
 				<div field="do" width="40" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO2'>操作</div>
 			</div>
 		</div>
+		<jsp:include page="/pages/common/exportExcel.jsp"></jsp:include>
 	</div>
 </div>
 <!-- 
@@ -600,7 +602,8 @@ function onSelectchanged(e){
     		var e_date =mini.get("e_date2").getValue();
     		if(s_date) s_date=mini.formatDate(s_date,'yyyyMMdd');
     		if(e_date) e_date=mini.formatDate(e_date,'yyyyMMdd');
-    		grid2.load({stu_level:stu_level,stu_name:stu_name,s_date:s_date,e_date:e_date,processcode:id});
+    		//grid2.load({stu_level:stu_level,stu_name:stu_name,s_date:s_date,e_date:e_date,processcode:id});
+            Web.util.load("datagrid2",{stu_level:stu_level,stu_name:stu_name,s_date:s_date,e_date:e_date,processcode:id});
     	}
 
     	function onrenderDO(e){
@@ -652,5 +655,28 @@ function onSelectchanged(e){
                 onSerach2();
             })
         }
+        $(document).ready(function () {
+			if("02"==usergrouptype){
+                grid2.showColumn("stuid");
+                grid2.showColumn("groupname");
+                grid2.showColumn("stu_name");
+                grid2.showColumn("cellphone");
+                //grid2.showColumn("stu_level");
+                grid2.showColumn("recorderor");
+                grid2.showColumn("followor");
+                grid2.showColumn("examlevelor");
+                grid2.showColumn("examclassor");
+                grid2.showColumn("firstwishschoolor");
+                grid2.showColumn("firstwishspecialtyor");
+                grid2.showColumn("learningformor");
+                grid2.showColumn("manualschool");
+                grid2.showColumn("manualspecialty");
+               // grid2.showColumn("stepcode");
+                grid2.showColumn("enabled");
+                //grid2.showColumn("blongrelation");
+                grid2.showColumn("comments");
+                grid2.showColumn("ctime");
+			}
+        });
     </script>
 </html>
