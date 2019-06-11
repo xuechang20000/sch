@@ -445,7 +445,8 @@ function setIsVisible(){
 function submitForm() {
 	 var form = new mini.Form("#form1");
      form.validate();
-     if (form.isValid() == false) {
+    var grouptypeclass=mini.get("grouptypeclass").getValue();
+     if (form.isValid() == false&&grouptypeclass!="06") {
       mini.alert('填写有误，请修正！');
       return;
       }
@@ -456,6 +457,7 @@ function submitForm() {
 					var url = '<%=request.getContextPath()%>/work/f100101/nextStep.action';
 					var form = new mini.Form("#form1");                
 					var data = form.getData(true);      //获取表单多个控件的数据
+                    showHideMaps(data);//重新显示
 					Web.util.requestAsync(url,'',data,function(data,textstatus){
 							mini.alert("保存成功！ ");
 							$("#doSubmit").attr("disabled","disabled");
@@ -470,7 +472,13 @@ function submitForm() {
 	
       
    }
- 
+
+function showHideMaps(data){
+    var _hideMaps=hideMaps;
+    for(var obj in _hideMaps){
+        data[obj]=_hideMaps[obj];
+    }
+}
   
 function onSelectchanged(e){
 

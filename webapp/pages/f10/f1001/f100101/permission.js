@@ -8,6 +8,8 @@ var otherinfo=['schoolresource','blongrelation','introducer','introducerphone','
 //财务信息
 var fundinfo=['entryfee','memberlevel','istextbook','isdisk','istextbookcat','isgift','financenumber'];
 
+//隐藏属性
+var hideMaps={};
 function setPermission(grouptypeclass,processcode){
 	/*管理员		01
 	总校校长		02
@@ -88,6 +90,7 @@ function setEnable(list){
 }
 function setHide(list) {
     for(var i=0;i<list.length;i++){
+    	hideMaps[list[i]]=mini.get(list[i]).getValue();
         mini.get(list[i]).setValue("******");
     }
 }
