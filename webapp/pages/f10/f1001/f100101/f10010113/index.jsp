@@ -380,7 +380,7 @@
             <div field="cellphone" width="90" headerAlign="center"  align="center" allowSort="true" renderer='oncellphoneRender'>手机</div> 
             <div field="stu_level" width="60" headerAlign="center"  align="center" allowSort="true" renderer='oncodeRender'>学生级别</div> 
 			<div field="recorderor" width="60" headerAlign="center"  align="center" allowSort="true" >学习顾问</div> 
-			<div field="followor" width="60" headerAlign="center"  align="center" allowSort="true" >跟进<br/>服务人</div> 
+			<div field="followor" width="60" headerAlign="center"  align="center" visible="false" allowSort="true" >跟进<br/>服务人</div>
 			<div field="examlevelor" width="60" headerAlign="center"  align="center" allowSort="true" >报考层次</div> 
 			<div field="examclassor" width="60" headerAlign="center" align="center"  allowSort="true" >考试科类</div> 
 			<div field="firstwishschoolor" width="60" headerAlign="center" align="center"  allowSort="true" >一志愿<br/>院校</div> 

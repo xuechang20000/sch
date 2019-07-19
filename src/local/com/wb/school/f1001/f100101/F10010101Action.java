@@ -47,8 +47,8 @@ public class F10010101Action {
 
 	@RequestMapping("addStudent.action")
 	@ResponseBody
-	public String addStudent(Student student, HttpServletRequest request) {
-		empService.addStudent(student);
+	public String addStudent(Student student,String pre, HttpServletRequest request) {
+		empService.addStudent(student,pre);
 		return JsonUtils.getJsonData(student);
 	}
 

@@ -24,7 +24,7 @@ import com.wb.school.f1001.common.vo.StudentVO;
  */
 public interface EmpService {
 	public List<User> loadAllUser();
-	public void addStudent(Student stu);
+	public void addStudent(Student stu,String pre);
 	public void addStudentPre(StudentPre stu);
 	public void updateStudentPreToAlready(StudentPre stu) ;
 	public void addStudentExt(Student stu);

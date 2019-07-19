@@ -29,6 +29,7 @@
                        <input id="groupname" name="groupname" value="${groupname }" class="mini-textbox" enabled="false" /> <font color="red">*</font>
                        <input id="grouptypeclass" name="grouptypeclass" value="${grouptypeclass }" visible="false" class="mini-textbox" enabled="false" /> 
                        <input id="stuid" name="stuid"  visible="false" class="mini-textbox" enabled="false" /> 
+                       <input id="pre" name="pre"  visible="false" class="mini-textbox" value="1" enabled="false" />
                     </td>
                     <td >学历类别：</td>
                     <td>
@@ -386,6 +387,7 @@ function loadForm() {
    var url = '<%=request.getContextPath()%>/work/f10010113/queryStudnetByStuidPre.action?stuid='+stuid;
    Web.util.formLoad("form1",url,'','',function(data){
    			//设置权限
+           mini.get("pre").setValue('1'); //预报名标志
    			var grouptypeclass=mini.get("grouptypeclass").getValue();
    			//setPermission(grouptypeclass,processcode);
    			//setdoSubmit(grouptypeclass,data.stepcode);
@@ -436,6 +438,7 @@ function loadForm() {
    			setbirthday();
    			//预报名查询去掉保存
    			if(search=='1')  $("#doSubmit").hide();
+
    });
    
    

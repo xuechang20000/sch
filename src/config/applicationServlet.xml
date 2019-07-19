@@ -23,7 +23,8 @@
 	<!-- 使Spring支持自动检测组件，如注解的Controller -->
 	<context:component-scan base-package="com.wb.school" />
 	<context:component-scan base-package="com.wb.admin" />
-    
+	<context:component-scan base-package="com.wb.exceptions" />
+
        <!-- 定时器开关-->
     <task:annotation-driven />
     <task:scheduler id="myScheduler" pool-size="10"/>
@@ -112,7 +113,7 @@
 	<!--公共Excel导出组件-->
 	<import resource="classpath:/com/wb/contain/containContext.xml"/>
 	<!--公共异常处理组件-->
-	<import resource="classpath:/com/wb/exceptions/exceptionContext.xml"/>
+	<!--<import resource="classpath:/com/wb/exceptions/exceptionContext.xml"/>-->
 	<!--公共业务组件-->
 	<import resource="classpath:/com/wb/school/common/commonContext.xml"/>
 	<!--权限管理-->

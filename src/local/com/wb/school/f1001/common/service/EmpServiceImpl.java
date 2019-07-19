@@ -55,12 +55,19 @@ public class EmpServiceImpl implements EmpService {
 	}
 
 	@Override
-	public void addStudent(Student stu) {
+	public void addStudent(Student stu,String pre) {
 		//String sql = "select * from t_student where cardid=? and (enabled is null or enabled='1') and CTIME > DATE_SUB(CURDATE(),INTERVAL dayofyear(now())-1 DAY) ";
 		String sql = "select * from t_student where cardid=? and (enabled is null or enabled='1') ";
 		Student student = CommonJdbcUtils.queryFirst(sql, Student.class, stu.getCardid());
 		if (student != null) {
 			throw new BusinessException("该身份证号人员已经存在！");
+		}
+		if(!"1".equals(pre)){//已经预报名，不允正式报名
+			sql="select * from t_pre_student where (cardid=? or CELLPHONE=? or EMAIL=?)  and (enabled is null or enabled='1') and CTIME > DATE_SUB(CURDATE(),INTERVAL dayofyear(now())-1 DAY)";
+			StudentPre studentPre=CommonJdbcUtils.queryFirst(sql,StudentPre.class,stu.getCardid(),stu.getCellphone(),stu.getEmail());
+			if (studentPre != null) {
+				throw new BusinessException("该身份证号人员已经预报名！");
+			}
 		}
 		stu.setEnabled("1");
 		stu.setCtime(new Date());
