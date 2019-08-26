@@ -36,8 +36,10 @@ public interface EmpService {
 	public void saveLog(ProcessDTO dto,Long stuid,String stuName);
 	public void queryStuListByCurentUser(Page page,StudentVO vo);
 	public void queryStuListByCurentUserPre(Page page, StudentVO vo);
+	public Integer queryStuListByCurentUserPreCount(StudentVO vo);
 	public void queryStuListByCurentUserPub(Page page,StudentVO vo);
-	public void queryExport(Page page,StudentVO vo);
+    public Integer queryStuListByCurentUserPubCount( StudentVO vo);
+    public void queryExport(Page page,StudentVO vo);
 	public List<ExportSetVO> queryExportSets(String iscall,String isstudent);
 	public List<ExportSetVO> queryExportSets(String arrays);
 	public void queryStuListByCurentUser(Page page);

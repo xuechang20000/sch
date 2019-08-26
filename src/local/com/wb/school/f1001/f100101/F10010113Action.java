@@ -65,6 +65,12 @@ public class F10010113Action {
 		this.empService.queryStuListByCurentUserPre(page,vo);
 		return JsonUtils.getJsonByPage(page);
 	}
+	@RequestMapping(value="queryStuListByCurentUserPreCount.action")
+	@ResponseBody
+	public String queryStuListByCurentUserPreCount(StudentVO vo,HttpServletRequest request,HttpServletResponse response) throws Exception{
+
+		return  this.empService.queryStuListByCurentUserPreCount(vo).toString();
+	}
 	@RequestMapping(value="queryStuListByCurentUserPreDis.action")
 	@ResponseBody
 	public String queryStuListByCurentUserPreDis(HttpServletRequest request,HttpServletResponse response) throws Exception{
@@ -73,12 +79,14 @@ public class F10010113Action {
 		StudentVO vo = new StudentVO();
 		String stu_name = request.getParameter("stu_name");
 		String stu_level = request.getParameter("stu_level");
+		String cellphone = request.getParameter("cellphone");
 		String s_date = request.getParameter("s_date");
 		String e_date = request.getParameter("e_date");
 		vo.setStu_name(stu_name);
 		vo.setStu_level(stu_level);
 		vo.setS_date(s_date);
 		vo.setE_date(e_date);
+		vo.setCellphone(cellphone);
 		Page page = new Page();
 		page.setPageno(pageIndex+1);
 		page.setPagesize(pageSize);

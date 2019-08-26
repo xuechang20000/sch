@@ -62,14 +62,32 @@ public class F100101Action {
 	}
 	@RequestMapping(value="queryStuListByCurentUserPub.action")
 	@ResponseBody
-	public String queryStuListByCurentUserPub(StudentVO vo,HttpServletRequest request,HttpServletResponse response) throws Exception{
+	public String queryStuListByCurentUserPub(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		int pageSize = RequestUtils.getParameter(request, "pageSize", 0);
 		int pageIndex = RequestUtils.getParameter(request, "pageIndex", 0);
 		Page page = new Page();
 		page.setPageno(pageIndex+1);
 		page.setPagesize(pageSize);
+		StudentVO vo=new StudentVO();
+		String stu_name=request.getParameter("stu_name");
+		String stu_level=request.getParameter("stu_level");
+		String cardid=request.getParameter("cardid");
+		String s_date=request.getParameter("s_date");
+		String e_date=request.getParameter("e_date");
+		String iscreatenormal=request.getParameter("iscreatenormal");
+		vo.setStu_name(stu_name);
+		vo.setStu_level(stu_level);
+		vo.setS_date(s_date);
+		vo.setE_date(e_date);
+		vo.setIscreatenormal(iscreatenormal);
+		vo.setCardid(cardid);
 		this.empService.queryStuListByCurentUserPub(page,vo);
 		return JsonUtils.getJsonByPage(page);
+	}
+	@RequestMapping(value="queryStuListByCurentUserPubCount.action")
+	@ResponseBody
+	public String queryStuListByCurentUserPubCount(StudentVO vo,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		return  this.empService.queryStuListByCurentUserPubCount(vo).toString();
 	}
 	@RequestMapping(value="queryExport.action")
 	@ResponseBody

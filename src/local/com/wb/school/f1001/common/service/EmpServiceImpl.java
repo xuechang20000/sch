@@ -266,7 +266,10 @@ public class EmpServiceImpl implements EmpService {
 				"       A.BLONGRELATION,a.ctime,a.stepcode                                                                     ");
 		sb.append("  FROM T_STUDENT A, APP_ORGAN_USER B                                                        ");
 		sb.append(
-				" WHERE A.RECORDER = B.USERID   AND a.ISCREATENORMAL='1' and a.processcode=?  and (a.ENABLED<>2 or a.ENABLED is null) "
+				" WHERE A.RECORDER = B.USERID   AND a.ISCREATENORMAL='1'" +
+                        " and a.processcode=? " +
+                        " and (a.ENABLED<>2 or a.ENABLED is null) " +
+                        " and b.NODEID in (select nodeid from app_organ where REMOVED='0')"
 						+ " AND a.STEPCODE in (select STEPCODE from t_step where FIND_IN_SET(" + groupid
 						+ ",GROUPID))                  ");
 		sb.append("   AND B.NODEID IN                                                                        ");
@@ -338,6 +341,9 @@ public class EmpServiceImpl implements EmpService {
 		if (vo.getStu_level() != null && vo.getStu_level().length() > 0 && vo.getStu_level().length() < 10) {
 			sb.append(" and a.stu_level=" + vo.getStu_level() + "  ");
 		}
+		if (vo.getCellphone() != null && vo.getCellphone().length() > 0 ) {
+			sb.append(" and a.cellphone=" + vo.getCellphone() + "  ");
+		}
 		if (vo.getS_date() != null && vo.getS_date().length() > 0) {
 			sb.append(" AND a.ctime>=to_date('" + vo.getS_date() + "','yyyymmdd')  ");
 		}
@@ -345,6 +351,42 @@ public class EmpServiceImpl implements EmpService {
 			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
 		}
 		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, "z", ou.getNodeid());
+	}
+	/**
+	 * 查询预报名待操作列表
+	 */
+	@Override
+	public Integer queryStuListByCurentUserPreCount(StudentVO vo) {
+		StringBuffer sb = new StringBuffer();
+		UserVO user = BusinessContextUtils.getUserContext();
+		OrganUser ou = CommonJdbcUtils.queryFirst("select * from app_organ_user where userid=?", OrganUser.class,
+				user.getUserid());
+		if (ou == null)
+			return 0;
+		Long groupid = user.getGrouptypeid();
+		sb.append("SELECT count(a.STUID) vcount                                                                     ");
+		sb.append("  FROM t_pre_student A, APP_ORGAN_USER B                                                        ");
+		sb.append(
+				" WHERE A.RECORDER = B.USERID   and a.processcode=?  "
+						+ "  ");
+		sb.append("   AND B.NODEID IN                                                                        ");
+		sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan(?)))    ");
+		//超过30天进入待分配池
+		sb.append(" and (a.CTIME >= DATE_SUB(CURDATE(),INTERVAL 30 DAY)  " +
+				" or a.stuid in (select stuid from t_pre_student_dis where record="+user.getUserid()+")) ");
+		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
+			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
+		}
+		if (vo.getStu_level() != null && vo.getStu_level().length() > 0 && vo.getStu_level().length() < 10) {
+			sb.append(" and a.stu_level=" + vo.getStu_level() + "  ");
+		}
+		if (vo.getS_date() != null && vo.getS_date().length() > 0) {
+			sb.append(" AND a.ctime>=to_date('" + vo.getS_date() + "','yyyymmdd')  ");
+		}
+		if (vo.getE_date() != null && vo.getE_date().length() > 0) {
+			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
+		}
+		return CommonJdbcUtils.queryObject(sb.toString(), Integer.class, "z", ou.getNodeid());
 	}
 	/**
 	 * 查询预报名待分配列表
@@ -400,6 +442,9 @@ public class EmpServiceImpl implements EmpService {
 		if (vo.getStu_level() != null && vo.getStu_level().length() > 0 && vo.getStu_level().length() < 10) {
 			sb.append(" and a.stu_level=" + vo.getStu_level() + "  ");
 		}
+		if (vo.getCellphone() != null && vo.getCellphone().length() > 0 ) {
+			sb.append(" and a.cellphone=" + vo.getCellphone() + "  ");
+		}
 		if (vo.getS_date() != null && vo.getS_date().length() > 0) {
 			sb.append(" AND a.ctime>=to_date('" + vo.getS_date() + "','yyyymmdd')  ");
 		}
@@ -426,6 +471,7 @@ public class EmpServiceImpl implements EmpService {
 		if(!user.getGrouptypeclass().equals("04")&&!user.getGrouptypeclass().equals("06"))
 		sb.append("       A.CEllPHONE,                                                                               ");
 		sb.append("       A.STU_LEVEL,                                                                           ");
+		sb.append("       A.cardid,                                                                           ");
 		sb.append("       A.RECORDER,                                                                            ");
 		sb.append("       (SELECT NAME FROM app_user WHERE userid=a.recorder) RECORDEROR,                        ");
 		sb.append("       A.FOLLOW,                                                                              ");
@@ -445,6 +491,64 @@ public class EmpServiceImpl implements EmpService {
 		sb.append("       A.BLONGRELATION,                                                                        ");
 		sb.append(" 	CONCAT((select processname from t_process where PROCESSCODE=a.PROCESSCODE),"
 				+ "'》',(select stepname from t_step where STEPCODE=a.STEPCODE)) as proce_stepname ");
+		sb.append("  FROM T_STUDENT A,t_student_ext c,v_app_user d                    ");
+		sb.append(
+				" WHERE  a.stuid=c.stuid	and a.RECORDER=d.userid	and (a.ENABLED<>2 or a.ENABLED is null)						 ");
+		sb.append("   AND d.NODEID IN                                                                          	 ");
+		sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan(?)))    ");
+		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
+			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
+		}
+		if (vo.getStu_level() != null && vo.getStu_level().length() > 0 && vo.getStu_level().length() < 10) {
+			sb.append(" and a.stu_level=" + vo.getStu_level() + "  ");
+		}
+		if (vo.getS_date() != null && vo.getS_date().length() > 0) {
+			sb.append(" AND a.ctime>=to_date('" + vo.getS_date() + "','yyyymmdd')  ");
+		}
+		if (vo.getE_date() != null && vo.getE_date().length() > 0) {
+			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
+		}
+		if (vo.getIsstudent() != null && "1".equals(vo.getIsstudent())) {
+			sb.append(" AND c.isstudent='1'  ");
+		}
+		if (vo.getCardid() != null&&vo.getCardid().length()>3) {
+			sb.append(" AND a.cardid='"+vo.getCardid()+"'  ");
+		}
+		if (vo.getGroupname() != null && vo.getGroupname().length() > 0) {
+			sb.append(" AND d.groupname like '%" + vo.getGroupname() + "%'  ");
+		}
+		if (vo.getProcesscode() != null && vo.getProcesscode().length() > 0) {
+			sb.append(" AND a.processcode ='" + vo.getProcesscode() + "'  ");
+		}
+		if (vo.getStepcode() != null && vo.getStepcode().length() > 0) {
+			sb.append(" AND SUBSTR(a.stepcode,2,1) ='" + vo.getStepcode().substring(1, 2) + "'  ");
+		}
+		if (vo.getFollowor() != null && vo.getFollowor().length() > 0) {
+			sb.append(" AND a.follow =" + vo.getFollowor() + " ");
+		}
+		if (vo.getIsstudent() != null && "2".equals(vo.getIsstudent())) {
+			sb.append(" AND ( c.isstudent is null or c.isstudent='2' ) ");
+		}
+		if (vo.getIscreatenormal() != null && "3".equals(vo.getIscreatenormal())) {
+			sb.append(" AND a.iscreatenormal='3'  ");
+		} else {
+			sb.append(" AND a.iscreatenormal='1'  ");
+		}
+		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, ou.getNodeid());
+	}
+	/**
+	 * 查询待操作列表
+	 */
+	@Override
+	public Integer queryStuListByCurentUserPubCount( StudentVO vo) {
+		StringBuffer sb = new StringBuffer();
+		UserVO user = BusinessContextUtils.getUserContext();
+		OrganUser ou = CommonJdbcUtils.queryFirst("select * from app_organ_user where userid=?", OrganUser.class,
+				user.getUserid());
+		if (ou == null)
+			return 0;
+		// Long groupid=user.getGrouptypeid();
+		sb.append("SELECT count(1)                                 ");
 		sb.append("  FROM T_STUDENT A,t_student_ext c,v_app_user d                    ");
 		sb.append(
 				" WHERE  a.stuid=c.stuid	and a.RECORDER=d.userid	and (a.ENABLED<>2 or a.ENABLED is null)						 ");
@@ -485,7 +589,7 @@ public class EmpServiceImpl implements EmpService {
 		} else {
 			sb.append(" AND a.iscreatenormal='1'  ");
 		}
-		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, ou.getNodeid());
+		return  CommonJdbcUtils.queryObject(sb.toString(), Integer.class, ou.getNodeid());
 	}
 
 	/**

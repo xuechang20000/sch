@@ -357,12 +357,15 @@
 		<fieldset id="fd2">
     <legend><span>查询条件</span></legend>
 					学生级别：                
-                          <input id="stu_level" name="stu_level" class="mini-combobox"  
+                          <input id="stu_level1" name="stu_level" class="mini-combobox"
                           textField="aaa103" valueField="aaa102"  url="<%=request.getContextPath()%>/common/code.action?codename=stu_level" showNullItem="true" allowInput="true"/> 
                    &nbsp;&nbsp;&nbsp;&nbsp;
                    	 学生姓名:
-                          <input id="stu_name" name="stu_name" class="mini-textbox"/>
-                          &nbsp;&nbsp;&nbsp;&nbsp; 
+                          <input id="stu_name1" name="stu_name" class="mini-textbox"/>
+                          &nbsp;&nbsp;&nbsp;
+                   	 手机:
+                          <input id="cellphone1" name="cellphone" class="mini-textbox"/>
+                          &nbsp;&nbsp;&nbsp;
                     	自：
                     	<input class="mini-datepicker" style="width:150px;" id="s_date" name="s_date"  />
                     	至
@@ -405,7 +408,10 @@
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			学生姓名:
 			<input id="stu_name2" name="stu_name" class="mini-textbox"/>
-			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;
+            手机：
+			<input id="cellphone2" name="cellphone" class="mini-textbox"/>
+			&nbsp;&nbsp;&nbsp;
 			自：
 			<input class="mini-datepicker" style="width:150px;" id="s_date2" name="s_date"  />
 			至
@@ -586,24 +592,26 @@ function onSelectchanged(e){
 
     	function onSerach(){
         	
-    		var stu_level=mini.get("stu_level").getValue();
-    		var stu_name =mini.get("stu_name").getValue();
+    		var stu_level=mini.get("stu_level1").getValue();
+    		var stu_name =mini.get("stu_name1").getValue();
+    		var cellphone =mini.get("cellphone1").getValue();
     		var s_date =mini.get("s_date").getValue();
     		var e_date =mini.get("e_date").getValue();
     		if(s_date) s_date=mini.formatDate(s_date,'yyyyMMdd');
     		if(e_date) e_date=mini.formatDate(e_date,'yyyyMMdd');
-    		grid.load({stu_level:stu_level,stu_name:stu_name,s_date:s_date,e_date:e_date,processcode:id});
+    		grid.load({stu_level:stu_level,stu_name:stu_name,cellphone:cellphone,s_date:s_date,e_date:e_date,processcode:id});
     	}
     	function onSerach2(){
 
     		var stu_level=mini.get("stu_level2").getValue();
     		var stu_name =mini.get("stu_name2").getValue();
+            var cellphone =mini.get("cellphone2").getValue();
     		var s_date =mini.get("s_date2").getValue();
     		var e_date =mini.get("e_date2").getValue();
     		if(s_date) s_date=mini.formatDate(s_date,'yyyyMMdd');
     		if(e_date) e_date=mini.formatDate(e_date,'yyyyMMdd');
     		//grid2.load({stu_level:stu_level,stu_name:stu_name,s_date:s_date,e_date:e_date,processcode:id});
-            Web.util.load("datagrid2",{stu_level:stu_level,stu_name:stu_name,s_date:s_date,e_date:e_date,processcode:id});
+            Web.util.load("datagrid2",{stu_level:stu_level,stu_name:stu_name,cellphone:cellphone,s_date:s_date,e_date:e_date,processcode:id});
     	}
 
     	function onrenderDO(e){

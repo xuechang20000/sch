@@ -38,7 +38,8 @@ var grid=mini.get("datagrid1");
 		onRender();
 		});
 
-	
+renderPreBM();
+renderDiaodui();
 function onRender(){
 
 	var rows=grid.findRows(function(row){
@@ -56,6 +57,28 @@ for(var i=0;i<rows.length;i++){
 			$(this).html(initval+'('+rows[i].vcount+')');
 		});
 	}
+}
+function  renderPreBM() {
+    var  url="<%=request.getContextPath()%>/work/f10010113/queryStuListByCurentUserPreCount.action";
+    Web.util.request(url,"post",{},function(value){
+        setCount('预报名登记',value);
+    })
+}
+function  renderDiaodui() {
+    var  url="<%=request.getContextPath()%>/work/f100101/queryStuListByCurentUserPubCount.action";
+    Web.util.request(url,"post",{iscreatenormal:3},function(value){
+        setCount('掉队',value);
+    })
+}
+function setCount(name,vcount) {
+    var trees=$('#leftTree', window.parent.document).find(".mini-menuitem-text").filter(function(){
+        return $(this).html()==name;
+    });
+    trees.each(function(j){
+        //alert($(this).html());
+        var initval=$(this).html();
+        $(this).html(initval+'('+vcount+')');
+    });
 }
 </script>
 </html>
