@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.wb.school.common.bo.*;
+import com.wb.school.f1001.common.vo.*;
 import com.wb.utils.web.common.StringTools;
 import org.springframework.beans.BeanUtils;
 
@@ -15,20 +17,7 @@ import com.wb.exceptions.BusinessException;
 import com.wb.jdbcutils.CommonJdbcUtils;
 import com.wb.jdbcutils.Page;
 import com.wb.login.model.UserVO;
-import com.wb.school.common.bo.Log;
-import com.wb.school.common.bo.Processs;
-import com.wb.school.common.bo.Step;
-import com.wb.school.common.bo.Student;
-import com.wb.school.common.bo.StudentExt;
-import com.wb.school.common.bo.StudentPay;
-import com.wb.school.common.bo.StudentPre;
 import com.wb.school.common.service.CommonService;
-import com.wb.school.f1001.common.vo.ExportSetVO;
-import com.wb.school.f1001.common.vo.ExportVO;
-import com.wb.school.f1001.common.vo.ProStepParmVO;
-import com.wb.school.f1001.common.vo.ProcessDTO;
-import com.wb.school.f1001.common.vo.StudentExtVO;
-import com.wb.school.f1001.common.vo.StudentVO;
 import com.wb.user.utils.BusinessContextUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -550,6 +539,105 @@ public class EmpServiceImpl implements EmpService {
 			sb.append(" AND a.iscreatenormal='1'  ");
 		}
 		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, ou.getNodeid());
+	}
+	/**
+	 * 查询待操作列表
+	 * 退费查询功能
+	 */
+	@Override
+	public void queryStuListByCurentUserPubForDelete(Page page, StudentVO vo) {
+		StringBuffer sb = new StringBuffer();
+		UserVO user = BusinessContextUtils.getUserContext();
+		OrganUser ou = CommonJdbcUtils.queryFirst("select * from app_organ_user where userid=?", OrganUser.class,
+				user.getUserid());
+		if (ou == null)
+			return;
+		// Long groupid=user.getGrouptypeid();
+		sb.append("SELECT d.groupname GROUPNAME,                                 ");
+		sb.append("       A.STUID,                                                                               ");
+		sb.append("       A.STU_NAME,                                                                            ");
+		if(!user.getGrouptypeclass().equals("04")&&!user.getGrouptypeclass().equals("06"))
+		sb.append("       A.CEllPHONE,                                                                               ");
+		sb.append("       A.STU_LEVEL,                                                                           ");
+		sb.append("       A.cardid,                                                                           ");
+		sb.append("       A.RECORDER,                                                                            ");
+		sb.append("       (SELECT NAME FROM app_user WHERE userid=a.recorder) RECORDEROR,                        ");
+		sb.append("       A.FOLLOW,                                                                              ");
+		sb.append("       (SELECT NAME FROM app_user WHERE userid=a.FOLLOW) FOLLOWOR,                            ");
+		sb.append("       A.EXAMLEVEL,                                                                           ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.examlevel) examlevelor,                          ");
+		sb.append("       A.EXAMCLASS,                                                                           ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.EXAMCLASS) EXAMCLASSor,                          ");
+		sb.append("       A.FIRSTWISHSCHOOL,                                                                     ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.FIRSTWISHSCHOOL) FIRSTWISHSCHOOLor,              ");
+		sb.append("       A.FIRSTWISHSPECIALTY,                                                                  ");
+		sb.append("       (SELECT NAME FROM t_school WHERE ID=a.FIRSTWISHSPECIALTY) FIRSTWISHSPECIALTYor,        ");
+		sb.append("       A.LEARNINGFORM,                                                                        ");
+		sb.append("        (SELECT NAME FROM t_school WHERE ID=a.LEARNINGFORM) LEARNINGFORMor,                   ");
+		sb.append("       A.MANUALSCHOOL,                                                                        ");
+		sb.append("       A.MANUALSPECIALTY,                                                                     ");
+		sb.append("       A.BLONGRELATION,                                                                        ");
+		sb.append(" 	CONCAT((select processname from t_process where PROCESSCODE=a.PROCESSCODE),"
+				+ "'》',(select stepname from t_step where STEPCODE=a.STEPCODE)) as proce_stepname, ");
+		sb.append(" (select 1 from t_student_delete f where a.STUID=f.stuid and enabled='1') as dflag ");
+		sb.append("  FROM T_STUDENT A,t_student_ext c,v_app_user d                    ");
+		sb.append(
+				" WHERE  a.stuid=c.stuid	and a.RECORDER=d.userid	" +
+						" AND (IFNULL(a.ENABLED,'1')='1' or EXISTS(select 1 from t_student_delete f where a.STUID=f.stuid and enabled='1'))	 ");
+		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
+			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
+		}
+		if (vo.getStu_level() != null && vo.getStu_level().length() > 0 && vo.getStu_level().length() < 10) {
+			sb.append(" and a.stu_level=" + vo.getStu_level() + "  ");
+		}
+		if (vo.getS_date() != null && vo.getS_date().length() > 0) {
+			sb.append(" AND a.ctime>=to_date('" + vo.getS_date() + "','yyyymmdd')  ");
+		}
+		if (vo.getE_date() != null && vo.getE_date().length() > 0) {
+			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
+		}
+		if (vo.getOldeducationlevel() != null && vo.getOldeducationlevel().length() > 0) {
+			sb.append(" AND a.oldeducationlevel='" + vo.getOldeducationlevel() + "' ");
+		}
+		if (vo.getExamlevel() != null && vo.getExamlevel().length() > 0) {
+			sb.append(" AND a.examlevel='" + vo.getExamlevel() + "' ");
+		}
+		if (vo.getExamclass() != null && vo.getExamclass().length() > 0) {
+			sb.append(" AND a.examclass='" + vo.getExamclass() + "' ");
+		}
+		if (vo.getFirstwishschool() != null && vo.getFirstwishschool().length() > 0) {
+			sb.append(" AND a.firstwishschool='" + vo.getFirstwishschool() + "' ");
+		}
+		if (vo.getFirstwishspecialty() != null && vo.getFirstwishspecialty().length() > 0) {
+			sb.append(" AND a.firstwishspecialty='" + vo.getFirstwishspecialty() + "' ");
+		}
+		if (vo.getIsstudent() != null && "1".equals(vo.getIsstudent())) {
+			sb.append(" AND c.isstudent='1'  ");
+		}
+		if (vo.getCardid() != null&&vo.getCardid().length()>3) {
+			sb.append(" AND a.cardid='"+vo.getCardid().trim()+"'  ");
+		}
+		if (vo.getGroupname() != null && vo.getGroupname().length() > 0) {
+			sb.append(" AND d.groupname like '%" + vo.getGroupname() + "%'  ");
+		}
+		if (vo.getProcesscode() != null && vo.getProcesscode().length() > 0) {
+			sb.append(" AND a.processcode ='" + vo.getProcesscode() + "'  ");
+		}
+		if (vo.getStepcode() != null && vo.getStepcode().length() > 0) {
+			sb.append(" AND SUBSTR(a.stepcode,2,1) ='" + vo.getStepcode().substring(1, 2) + "'  ");
+		}
+		if (vo.getFollowor() != null && vo.getFollowor().length() > 0) {
+			sb.append(" AND a.follow =" + vo.getFollowor() + " ");
+		}
+		if (vo.getIsstudent() != null && "2".equals(vo.getIsstudent())) {
+			sb.append(" AND ( c.isstudent is null or c.isstudent='2' ) ");
+		}
+		if (vo.getIscreatenormal() != null && "3".equals(vo.getIscreatenormal())) {
+			sb.append(" AND a.iscreatenormal='3'  ");
+		} else {
+			sb.append(" AND a.iscreatenormal='1'  ");
+		}
+		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class);
 	}
 	/**
 	 * 查询待操作列表
@@ -1203,5 +1291,30 @@ public class EmpServiceImpl implements EmpService {
 		String sql="update t_pre_student set RECORDER=? where stuid=? ";
 		CommonJdbcUtils.execute(sql,userid,stuid);
 		CommonJdbcUtils.execute("insert into t_pre_student_dis values(?,?,'1')",stuid,userid);
+	}
+	/**
+	 * 退费,删除人员
+	 */
+	@Transactional
+	public void deleteRefund(StudentDeleteVO vo){
+		UserVO user = BusinessContextUtils.getUserContext();
+		String sql="update t_student set enabled='2' where stuid=?";
+		CommonJdbcUtils.execute(sql,vo.getStuid());
+		StudentDelete studentDelete=new StudentDelete();
+		BeanUtils.copyProperties(vo,studentDelete);
+		studentDelete.setUserid(user.getUserid());
+		studentDelete.setEnabled("1");
+		studentDelete.setCtime(new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date()));
+		CommonJdbcUtils.save(studentDelete);
+	}
+	/**
+	 * 退费删除人员
+	 */
+	@Transactional
+	public void updateRefund(StudentDeleteVO vo){
+		String sql="update t_student set enabled='1' where stuid=?";
+		CommonJdbcUtils.execute(sql,vo.getStuid());
+		sql="update t_student_delete set enabled='2' where stuid=?";
+		CommonJdbcUtils.execute(sql,vo.getStuid());
 	}
 }

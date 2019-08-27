@@ -8,13 +8,7 @@ import com.wb.school.common.bo.Student;
 import com.wb.school.common.bo.StudentExt;
 import com.wb.school.common.bo.StudentPay;
 import com.wb.school.common.bo.StudentPre;
-import com.wb.school.f1001.common.vo.ExportSetVO;
-import com.wb.school.f1001.common.vo.ProStepParmVO;
-import com.wb.school.f1001.common.vo.ProcessDTO;
-import com.wb.school.f1001.common.vo.StudentExtVO;
-import com.wb.school.f1001.common.vo.StudentVO;
-
-
+import com.wb.school.f1001.common.vo.*;
 
 
 /**
@@ -38,6 +32,7 @@ public interface EmpService {
 	public void queryStuListByCurentUserPre(Page page, StudentVO vo);
 	public Integer queryStuListByCurentUserPreCount(StudentVO vo);
 	public void queryStuListByCurentUserPub(Page page,StudentVO vo);
+	public void queryStuListByCurentUserPubForDelete(Page page, StudentVO vo);
     public Integer queryStuListByCurentUserPubCount( StudentVO vo);
     public void queryExport(Page page,StudentVO vo);
 	public List<ExportSetVO> queryExportSets(String iscall,String isstudent);
@@ -60,4 +55,6 @@ public interface EmpService {
 	public void updateBirthdayRemind(Long stuid);
 	public void updateDistributePreStudent(Long stuid,Long userid);
 	public void queryStuListByCurentUserPreDis(Page page, StudentVO vo);
+	public void deleteRefund(StudentDeleteVO vo);
+	public void updateRefund(StudentDeleteVO vo);
 }

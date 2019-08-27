@@ -23,6 +23,7 @@ public class StudentVO extends Student {
 	private String notNext;//是否跳到下一步
 	private String remind;//是否已经生日提醒
 	private String birthday;
+	private String dflag;
 	public String getProcessname() {
 		return processname;
 	}
@@ -137,6 +138,12 @@ public class StudentVO extends Student {
 	public String getBirthday() {
 		return birthday;
 	}
-	
-	
+
+	public String getDflag() {
+		return dflag;
+	}
+
+	public void setDflag(String dflag) {
+		this.dflag = dflag;
+	}
 }
