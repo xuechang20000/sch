@@ -508,6 +508,21 @@ public class EmpServiceImpl implements EmpService {
 		if (vo.getE_date() != null && vo.getE_date().length() > 0) {
 			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
 		}
+		if (vo.getOldeducationlevel() != null && vo.getOldeducationlevel().length() > 0) {
+			sb.append(" AND a.oldeducationlevel='" + vo.getOldeducationlevel() + "' ");
+		}
+		if (vo.getExamlevel() != null && vo.getExamlevel().length() > 0) {
+			sb.append(" AND a.examlevel='" + vo.getExamlevel() + "' ");
+		}
+		if (vo.getExamclass() != null && vo.getExamclass().length() > 0) {
+			sb.append(" AND a.examclass='" + vo.getExamclass() + "' ");
+		}
+		if (vo.getFirstwishschool() != null && vo.getFirstwishschool().length() > 0) {
+			sb.append(" AND a.firstwishschool='" + vo.getFirstwishschool() + "' ");
+		}
+		if (vo.getFirstwishspecialty() != null && vo.getFirstwishspecialty().length() > 0) {
+			sb.append(" AND a.firstwishspecialty='" + vo.getFirstwishspecialty() + "' ");
+		}
 		if (vo.getIsstudent() != null && "1".equals(vo.getIsstudent())) {
 			sb.append(" AND c.isstudent='1'  ");
 		}

@@ -44,7 +44,7 @@
                     	<a class="mini-button" id="id_onSerach" iconCls="icon-edit" onclick="onSerach">查询</a>
     </fieldset>
    <div id="datagrid1" class="mini-datagrid" style="width:100%;height:300px;" allowResize="true"
-        url="<%=request.getContextPath()%>/work/f100101/queryStuListByCurentUserPub.action"  idField="stuid"  pageSize='100'
+        url="<%=request.getContextPath()%>/work/f100101/queryStuListByCurentUserPub.action" pagerButtons="#exportExcel" idField="stuid"  pageSize='100'
     >
         <div property="columns">
             <div field="stuid" width="120" headerAlign="center" align="center" visible="false" allowSort="true">学生id</div>    
@@ -66,11 +66,13 @@
 			<div field="do" width="135" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO'>操作</div>        
         </div>
     </div>
+	<jsp:include page="/pages/common/exportExcel.jsp"></jsp:include>
 </body>
 <script type="text/javascript">
 mini.parse();
 var grid=mini.get("datagrid1");
-grid.load({iscreatenormal:3});
+//grid.load({iscreatenormal:3});
+Web.util.load("datagrid1",{iscreatenormal:3});
 var usergrouptype='${user.grouptypeclass}';
 
 
@@ -82,7 +84,7 @@ function onSerach(){
 	var e_date =mini.get("e_date").getValue();
 	if(s_date) s_date=mini.formatDate(s_date,'yyyyMMdd');
 	if(e_date) e_date=mini.formatDate(e_date,'yyyyMMdd');
-	grid.load({iscreatenormal:3,stu_level:stu_level,stu_name:stu_name,cardid:cardid,s_date:s_date,e_date:e_date});
+    Web.util.load("datagrid1",{iscreatenormal:3,stu_level:stu_level,stu_name:stu_name,cardid:cardid,s_date:s_date,e_date:e_date});
 }
 
 function onrenderDO(e){
