@@ -34,8 +34,10 @@ public class Student {
 	private String firstwishspecialty;//	varchar2(2)	y		第一志愿专业
 	private String learningform;//	varchar2(2)	y		学习形式
 	private String firstwishlength;//	varchar2(2)	y		第一志愿学制
-	private String collectwishschool;//	varchar2(2)	y		征集志愿院校
-	private String collectwishspecialty;//	varchar2(2)	y		征集志愿专业
+	private String collectwishschool;//	varchar2(2)	y		第二志愿志愿院校
+	private String collectwishspecialty;//	varchar2(2)	y		第二志愿专业
+	private String seclearningform;//	varchar2(2)	y		第二志愿学习形式
+	private String secwishlength;//	varchar2(2)	y		第二志愿学制
 	private String manualschool;//	varchar2(200)	y		手输院校
 	private String manualspecialty;//	varchar2(200)	y		手输专业
 	private String manualtype;//	varchar2(200)	y		手输学习形式
@@ -466,5 +468,20 @@ public class Student {
 	public String getFinancenumber() {
 		return financenumber;
 	}
+	@Column(name="seclearningform")
+	public String getSeclearningform() {
+		return seclearningform;
+	}
 
+	public void setSeclearningform(String seclearningform) {
+		this.seclearningform = seclearningform;
+	}
+	@Column(name="secwishlength")
+	public String getSecwishlength() {
+		return secwishlength;
+	}
+
+	public void setSecwishlength(String secwishlength) {
+		this.secwishlength = secwishlength;
+	}
 }

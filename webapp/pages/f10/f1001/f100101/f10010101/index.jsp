@@ -7,7 +7,7 @@
 	<title>基本信息</title>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/miniui/boot.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/javascript/frame.js"></script>
-	
+
 	 <style type="text/css">
 	body{background-color:#fff;}
 	#form1{width:80%;float:left;}
@@ -179,17 +179,28 @@
                     </td>
                 </tr>
                  <tr>
-                    <td >征集志愿院校 ：</td>
+                    <td >第二志愿院校 ：</td>
                     <td>
                        <input id="collectwishschool" name="collectwishschool" class="mini-combobox" style="width:150px;" 
                           textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/> 
                     </td>
-                    <td >征集志愿专业 ：</td>
+                    <td >第二志愿专业 ：</td>
                     <td>
-                          <input id="collectwishspecialty" name="collectwishspecialty" class="mini-combobox" style="width:150px;" 
+                          <input id="collectwishspecialty" name="collectwishspecialty" class="mini-combobox" style="width:150px;" onvaluechanged="onSelectchanged"
                           textField="name" valueField="id"  showNullItem="true" allowInput="true"/> 
                     </td>
                 </tr>
+              <tr>
+                  <td >第二志愿学习形式 ：</td>
+                  <td>
+                      <input id="seclearningform" name="seclearningform" class="mini-combobox" style="width:150px;"
+                             textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/>
+                  </td>
+                  <td >第二志愿学制 ：</td>
+                  <td>
+                      <input id="secwishlength" name="secwishlength" class="mini-textbox"  vtype="int" enabled='false'  />
+                  </td>
+              </tr>
                 <tr>
                     <td >手输院校 ：</td>
                     <td>
@@ -432,6 +443,12 @@ function onSelectchanged(e){
 		id="learningform";
 		Web.util.request("<%=request.getContextPath()%>/admin/querySchoolByid.action","",{id:parentid},function(data){
 			mini.get('firstwishlength').setValue(data.ext);
+		});
+	}
+	if("collectwishspecialty"==e.sender.id){
+		id="seclearningform";
+		Web.util.request("<%=request.getContextPath()%>/admin/querySchoolByid.action","",{id:parentid},function(data){
+			mini.get('secwishlength').setValue(data.ext);
 		});
 	}
 	var url="<%=request.getContextPath()%>/admin/querySubSchoolsById.action?parentid="+parentid;

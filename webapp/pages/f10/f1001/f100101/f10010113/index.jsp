@@ -181,18 +181,29 @@
 		                          <input id="firstwishlength" name="firstwishlength" class="mini-textbox"  enabled='false' /><font color="red">*</font> 
 		                    </td>
 		                </tr>
-		                 <tr>
-		                    <td >征集志愿院校 ：</td>
-		                    <td>
-		                       <input id="collectwishschool" name="collectwishschool" class="mini-combobox" style="width:150px;" 
-		                          textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/> 
-		                    </td>
-		                    <td >征集志愿专业 ：</td>
-		                    <td>
-		                          <input id="collectwishspecialty" name="collectwishspecialty" class="mini-combobox" style="width:150px;" 
-		                          textField="name" valueField="id"  showNullItem="true" allowInput="true"/> 
-		                    </td>
-		                </tr>
+					  <tr>
+						  <td >第二志愿院校 ：</td>
+						  <td>
+							  <input id="collectwishschool" name="collectwishschool" class="mini-combobox" style="width:150px;"
+									 textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/>
+						  </td>
+						  <td >第二志愿专业 ：</td>
+						  <td>
+							  <input id="collectwishspecialty" name="collectwishspecialty" class="mini-combobox" style="width:150px;" onvaluechanged="onSelectchanged"
+									 textField="name" valueField="id"  showNullItem="true" allowInput="true"/>
+						  </td>
+					  </tr>
+					  <tr>
+						  <td >第二志愿学习形式 ：</td>
+						  <td>
+							  <input id="seclearningform" name="seclearningform" class="mini-combobox" style="width:150px;"
+									 textField="name" valueField="id" onvaluechanged="onSelectchanged" showNullItem="true" allowInput="true"/>
+						  </td>
+						  <td >第二志愿学制 ：</td>
+						  <td>
+							  <input id="secwishlength" name="secwishlength" class="mini-textbox"  vtype="int" enabled='false'  />
+						  </td>
+					  </tr>
 		                <tr>
 		                    <td >手输院校 ：</td>
 		                    <td>
@@ -495,60 +506,66 @@ function submitForm() {
 		});
       
    }
-  
-function onSelectchanged(e){
-	if("firstwishschool"==e.sender.id&&!e.value){
-		mini.get('manualschool').enable();
-		mini.get('manualspecialty').enable();
-		mini.get('manualtype').enable();
-		mini.get('manuallength').enable();
-	}
-	if(!e.value) return;
-	var parentid=e.value;
-	var id;
-	var id2;
-	if("oldeducationlevel"==e.sender.id){
-		id="examlevel";
-		mini.get("examclass").setValue('');
-		mini.get("firstwishschool").setValue('');
-		mini.get("firstwishspecialty").setValue('');
-		mini.get("learningform").setValue('');
-	}
-	if("examlevel"==e.sender.id){
-		id="examclass";
-		mini.get("firstwishschool").setValue('');
-		mini.get("firstwishspecialty").setValue('');
-		mini.get("learningform").setValue('');
-	}
-	if("examclass"==e.sender.id){
-		id="firstwishschool";
-		id2="collectwishschool";
-		mini.get("firstwishspecialty").setValue('');
-		mini.get("learningform").setValue('');
-	}
-	if("firstwishschool"==e.sender.id){
-		id="firstwishspecialty";
-		mini.get('manualschool').disable();
-		mini.get('manualspecialty').disable();
-		mini.get('manualtype').disable();
-		mini.get('manuallength').disable();
-		mini.get("learningform").setValue('');
-	}
-	if("collectwishschool"==e.sender.id){
-		id="collectwishspecialty";
-	}
-	if("firstwishspecialty"==e.sender.id){
-		id="learningform";
-		Web.util.request("<%=request.getContextPath()%>/admin/querySchoolByid.action","",{id:parentid},function(data){
-			mini.get('firstwishlength').setValue(data.ext);
-		});
-	}
-	var url="<%=request.getContextPath()%>/admin/querySubSchoolsById.action?parentid="+parentid;
-	mini.get(id).setUrl(url);
-	if(id2){
-	mini.get(id2).setUrl(url);
-	}
-}
+
+    function onSelectchanged(e){
+        if("firstwishschool"==e.sender.id&&!e.value){
+            mini.get('manualschool').enable();
+            mini.get('manualspecialty').enable();
+            mini.get('manualtype').enable();
+            mini.get('manuallength').enable();
+        }
+        if(!e.value) return;
+        var parentid=e.value;
+        var id;
+        var id2;
+        if("oldeducationlevel"==e.sender.id){
+            id="examlevel";
+            mini.get("examclass").setValue('');
+            mini.get("firstwishschool").setValue('');
+            mini.get("firstwishspecialty").setValue('');
+            mini.get("learningform").setValue('');
+        }
+        if("examlevel"==e.sender.id){
+            id="examclass";
+            mini.get("firstwishschool").setValue('');
+            mini.get("firstwishspecialty").setValue('');
+            mini.get("learningform").setValue('');
+        }
+        if("examclass"==e.sender.id){
+            id="firstwishschool";
+            id2="collectwishschool";
+            mini.get("firstwishspecialty").setValue('');
+            mini.get("learningform").setValue('');
+        }
+        if("firstwishschool"==e.sender.id){
+            id="firstwishspecialty";
+            mini.get('manualschool').disable();
+            mini.get('manualspecialty').disable();
+            mini.get('manualtype').disable();
+            mini.get('manuallength').disable();
+            mini.get("learningform").setValue('');
+        }
+        if("collectwishschool"==e.sender.id){
+            id="collectwishspecialty";
+        }
+        if("firstwishspecialty"==e.sender.id){
+            id="learningform";
+            Web.util.request("<%=request.getContextPath()%>/admin/querySchoolByid.action","",{id:parentid},function(data){
+                mini.get('firstwishlength').setValue(data.ext);
+            });
+        }
+        if("collectwishspecialty"==e.sender.id){
+            id="seclearningform";
+            Web.util.request("<%=request.getContextPath()%>/admin/querySchoolByid.action","",{id:parentid},function(data){
+                mini.get('secwishlength').setValue(data.ext);
+            });
+        }
+        var url="<%=request.getContextPath()%>/admin/querySubSchoolsById.action?parentid="+parentid;
+        mini.get(id).setUrl(url);
+        if(id2){
+            mini.get(id2).setUrl(url);
+        }
+    }
 </script>
 
 <script type="text/javascript">
