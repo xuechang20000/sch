@@ -261,8 +261,10 @@ public class EmpServiceImpl implements EmpService {
                         " and b.NODEID in (select nodeid from app_organ where REMOVED='0')"
 						+ " AND a.STEPCODE in (select STEPCODE from t_step where FIND_IN_SET(" + groupid
 						+ ",GROUPID))                  ");
-		sb.append("   AND B.NODEID IN                                                                        ");
-		sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan(?)))    ");
+		if(!"02".equals(user.getGrouptypeclass())){
+			sb.append("   AND B.NODEID IN                                                                        ");
+			sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan("+ou.getNodeid()+")))    ");
+		}
 		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
 			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
 		}
@@ -275,7 +277,7 @@ public class EmpServiceImpl implements EmpService {
 		if (vo.getE_date() != null && vo.getE_date().length() > 0) {
 			sb.append(" AND a.ctime<=to_date('" + vo.getE_date() + "','yyyymmdd')  ");
 		}
-		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, vo.getProcesscode(), ou.getNodeid());
+		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, vo.getProcesscode());
 	}
 	/**
 	 * 查询预报名待操作列表
@@ -483,8 +485,11 @@ public class EmpServiceImpl implements EmpService {
 		sb.append("  FROM T_STUDENT A,t_student_ext c,v_app_user d                    ");
 		sb.append(
 				" WHERE  a.stuid=c.stuid	and a.RECORDER=d.userid	and (a.ENABLED<>2 or a.ENABLED is null)						 ");
-		sb.append("   AND d.NODEID IN                                                                          	 ");
-		sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan(?)))    ");
+		if(!"02".equals(user.getGrouptypeclass())){
+			sb.append("   AND d.NODEID IN                                                                          	 ");
+			sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan("+ou.getNodeid()+")))    ");
+		}
+
 		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
 			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
 		}
@@ -538,7 +543,7 @@ public class EmpServiceImpl implements EmpService {
 		} else {
 			sb.append(" AND a.iscreatenormal='1'  ");
 		}
-		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, ou.getNodeid());
+		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class);
 	}
 	/**
 	 * 查询待操作列表
@@ -655,8 +660,10 @@ public class EmpServiceImpl implements EmpService {
 		sb.append("  FROM T_STUDENT A,t_student_ext c,v_app_user d                    ");
 		sb.append(
 				" WHERE  a.stuid=c.stuid	and a.RECORDER=d.userid	and (a.ENABLED<>2 or a.ENABLED is null)						 ");
-		sb.append("   AND d.NODEID IN                                                                          	 ");
-		sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan(?)))    ");
+		if(!"02".equals(user.getGrouptypeclass())){
+			sb.append("   AND d.NODEID IN                                                                          	 ");
+			sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan("+ou.getNodeid()+")))    ");
+		}
 		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
 			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
 		}
@@ -692,7 +699,7 @@ public class EmpServiceImpl implements EmpService {
 		} else {
 			sb.append(" AND a.iscreatenormal='1'  ");
 		}
-		return  CommonJdbcUtils.queryObject(sb.toString(), Integer.class, ou.getNodeid());
+		return  CommonJdbcUtils.queryObject(sb.toString(), Integer.class);
 	}
 
 	/**
@@ -1026,13 +1033,16 @@ public class EmpServiceImpl implements EmpService {
 		sb.append(
 				"   AND A.ISCREATENORMAL = '1'     and (a.ENABLED<>2 or a.ENABLED is null)                                                         ");
 		sb.append(
-				"   AND a.STEPCODE in (select STEPCODE from t_step where FIND_IN_SET(?,GROUPID))                                                        ");
-		sb.append("   AND B.NODEID IN                                                                         ");
-		sb.append("       (SELECT NODEID                                                                      ");
-		sb.append("          FROM APP_ORGAN                                                                   ");
-		sb.append("         WHERE FIND_IN_SET(NODEID, SF_GETSUBORGAN(?)))                                      ");
+				"   AND a.STEPCODE in (select STEPCODE from t_step where FIND_IN_SET(?,GROUPID))                  ");
+		if(!"02".equals(user.getGrouptypeclass())){
+			sb.append("   AND B.NODEID IN                                                                         ");
+			sb.append("       (SELECT NODEID                                                                      ");
+			sb.append("          FROM APP_ORGAN                                                                   ");
+			sb.append("         WHERE FIND_IN_SET(NODEID, SF_GETSUBORGAN("+ou.getNodeid()+")))                                      ");
+		}
+
 		sb.append(" GROUP BY A.PROCESSCODE) d RIGHT  JOIN t_process e on d.PROCESSCODE=e.PROCESSCODE          ");
-		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, groupid, ou.getNodeid());
+		CommonJdbcUtils.queryPage(page, sb.toString(), StudentVO.class, groupid);
 	}
 
 	@Override
