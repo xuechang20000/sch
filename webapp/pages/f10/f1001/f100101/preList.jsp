@@ -101,10 +101,24 @@ function onSerach(){
 
 function onrenderDO(e){
 
-	var link ='<a href="javascript:onComplete()">完善信息</a>&nbsp;&nbsp;<a href="javascript:onOpenNext()">操作</a>';
+	var link ='<a href="javascript:onComplete()">完善信息</a>&nbsp;&nbsp;';
+	if(getProcessCodeByUserGroupType(e.record.stepcode)==usergrouptype){
+	    link=link+'<a href="javascript:onOpenNext()">操作</a>';
+    }else{
+        link=link+'<a href="javascript:onOpenQuery()"><font color="#a9a9a9">查询</font></a>';
+    }
 	return link;
 }
-
+function getProcessCodeByUserGroupType(code){
+    var type=code.substr(0,1);
+    if(type=='A'||type=='B'||type=='T') return usergrouptype;
+    code=code.substr(1,1);
+    if('1'==code) return '05';
+    if('2'==code) return '04';
+    if('3'==code) return '06';
+    if('4'==code) return '03';
+    if('5'==code) return '02';
+}
 function onComplete(){
 	var stuid=grid.getSelected().stuid;
 	mini.open({
@@ -133,6 +147,21 @@ function onOpenNext(){
 				onSerach();
 			}
 		});
+}
+function onOpenQuery(){
+    var stuid=grid.getSelected().stuid;
+    //Web.util.openWindow("/sch/pages/f10/f1001/f100101/"+id+".jsp",{stuid:stuid},1100,600);
+    mini.open({
+        url :'/sch/pages/f10/f1001/f100102/f10010202/detail.jsp?stuid='+stuid,
+        title : "操作审批",
+        width : 1100,
+        height : 600,
+        onload : function() {
+        },
+        ondestroy : function(action) {
+            //onSerach();
+        }
+    });
 }
 
 function oncodeRender(e){
