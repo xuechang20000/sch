@@ -196,8 +196,9 @@ public class F100101Action {
 	}
 	@RequestMapping(value="distributePreStudent.action")
 	@ResponseBody
-	public void distributePreStudent(Long stuid,Long userid){
+	public String distributePreStudent(Long stuid,Long userid){
 		this.empService.updateDistributePreStudent(stuid,userid);
+		return  "";
 	}
 	public void setEmpService(EmpService empService) {
 		this.empService = empService;

@@ -266,7 +266,7 @@ public class EmpServiceImpl implements EmpService {
 			sb.append("       (SELECT nodeid FROM app_organ WHERE FIND_IN_SET(nodeid,sf_getsuborgan("+ou.getNodeid()+")))    ");
 		}
 		if (vo.getStu_name() != null && vo.getStu_name().length() > 0 && vo.getStu_name().length() < 20) {
-			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name() + "%'   ");
+			sb.append(" and a.stu_name LIKE '%" + vo.getStu_name().trim() + "%'   ");
 		}
 		if (vo.getStu_level() != null && vo.getStu_level().length() > 0 && vo.getStu_level().length() < 10) {
 			sb.append(" and a.stu_level=" + vo.getStu_level() + "  ");

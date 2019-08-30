@@ -50,13 +50,8 @@
                 alert('请选择分配人');
                 return;
             }
-            $.ajax({
-                url: '<%=request.getContextPath()%>/work/f100101/distributePreStudent.action?stuid='+stuid+'&userid='+recorder,
-                type: "post",
-                //data: { json: json,groups:groups },
-                success: function (text) {
-                    alert("保存成功!");
-                }
+            Web.util.request('<%=request.getContextPath()%>/work/f100101/distributePreStudent.action?stuid='+stuid+'&userid='+recorder,"",{},function(data){
+                alert("保存成功!");
             });
         }
     }
