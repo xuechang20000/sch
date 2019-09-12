@@ -192,11 +192,17 @@ function patchDo(){
 	if(rows.length>0){
 			var stuids='';
 			for(var i=0;i<rows.length;i++){
-					if(stuids=='')
-						stuids=$.trim(rows[i].stuid);
-					else
-						stuids=stuids+","+$.trim(rows[i].stuid);
+                if(getProcessCodeByUserGroupType(rows[i].stepcode)==usergrouptype) {
+                    if (stuids == '')
+                        stuids = $.trim(rows[i].stuid);
+                    else
+                        stuids = stuids + "," + $.trim(rows[i].stuid);
+                    }
 				}
+            if(!stuids){
+			    mini.alert("没有可操作的记录！");
+			    return false;
+            }
 			var url = '<%=request.getContextPath()%>/work/f100101/execPatchNextStep.action';
 			Web.util.requestAsync(url,'POST',{stuids:stuids},
 					function(data){
