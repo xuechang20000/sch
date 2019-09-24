@@ -70,7 +70,8 @@
 			<div field="firstwishspecialtyor" width="60" headerAlign="center" align="center"  allowSort="true" >一志愿专业</div>  
 			<div field="learningformor" width="60" headerAlign="center" align="center"  allowSort="true" >学习形式</div>  
 			<div field="manualschool" width="60" headerAlign="center" align="center"  allowSort="true" >手输院校</div> 
-			<div field="manualspecialty" width="60" headerAlign="center" align="center"  allowSort="true" >手输专业</div> 
+			<div field="manualspecialty" width="60" headerAlign="center" align="center"  allowSort="true" >手输专业</div>
+			<div field="stepcode" width="60" headerAlign="center" align="center"  allowSort="true" >当前步骤</div>
 			<div field="blongrelation" width="60" headerAlign="center" align="center"  allowSort="true"  renderer='oncodeRenderNew'>隶属关系</div>
 			<div field="do" width="120" headerAlign="center" align="center"  allowSort="true" renderer='onrenderDO'>操作</div>        
         </div>
@@ -98,7 +99,12 @@ function onSerach(){
 
 function onrenderDO(e){
 
-	var link ='<a href="javascript:onComplete()">缴费</a>&nbsp;&nbsp;<a href="javascript:onOpenNext()">操作</a>';
+	var link ='<a href="javascript:onComplete()">缴费</a>&nbsp;&nbsp;';
+    if(getProcessCodeByUserGroupType(e.record.stepcode)==usergrouptype){
+        link=link+'<a href="javascript:onOpenNext()">操作</a>';
+    }else{
+        link=link+'<a href="javascript:onOpenQuery()"><font color="#a9a9a9">查询</font></a>';
+    }
 	return link;
 }
 
@@ -131,7 +137,21 @@ function onOpenNext(){
 			}
 		});
 }
-
+function onOpenQuery(){
+    var stuid=grid.getSelected().stuid;
+    //Web.util.openWindow("/sch/pages/f10/f1001/f100101/"+id+".jsp",{stuid:stuid},1100,600);
+    mini.open({
+        url :'/sch/pages/f10/f1001/f100102/f10010202/detail.jsp?stuid='+stuid,
+        title : "操作审批",
+        width : 1100,
+        height : 600,
+        onload : function() {
+        },
+        ondestroy : function(action) {
+            //onSerach();
+        }
+    });
+}
 function oncodeRender(e){
 	var retStr = '';
 	var rootPath=getWebRootPath();
@@ -160,10 +180,16 @@ function patchDo(){
     if(rows.length>0){
         var stuids='';
         for(var i=0;i<rows.length;i++){
-            if(stuids=='')
-                stuids=$.trim(rows[i].stuid);
-            else
-                stuids=stuids+","+$.trim(rows[i].stuid);
+            if(getProcessCodeByUserGroupType(rows[i].stepcode)==usergrouptype) {
+                if (stuids == '')
+                    stuids = $.trim(rows[i].stuid);
+                else
+                    stuids = stuids + "," + $.trim(rows[i].stuid);
+            }
+        }
+        if(!stuids){
+            mini.alert("没有可操作的记录！");
+            return false;
         }
         var url = '<%=request.getContextPath()%>/work/f100101/execPatchNextStep.action';
         Web.util.requestAsync(url,'POST',{stuids:stuids},
@@ -175,6 +201,16 @@ function patchDo(){
     }else{
         mini.alert("请选择记录");
     }
+}
+function getProcessCodeByUserGroupType(code){
+    var type=code.substr(0,1);
+    if(type=='A'||type=='B'||type=='T') return usergrouptype;
+    code=code.substr(1,1);
+    if('1'==code) return '05';
+    if('2'==code) return '04';
+    if('3'==code) return '06';
+    if('4'==code) return '03';
+    if('5'==code) return '02';
 }
 </script>
 </html>
